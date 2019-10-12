@@ -1,0 +1,18 @@
+[package]
+name = "edsm-dumps-downloader"
+version = "0.1.0"
+authors = ["Igaguri <igagurimk@gmail.com>"]
+edition = "2018"
+
+description = "Download and sync EDSM nightly dump files."
+license = "MIT OR Apache-2.0"
+categories = ["command-line-utilities"]
+keywords = []
+readme = "README.md"
+repository = "https://github.com/IgaguriMK/edsm-dumps-downloader"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.0"
+reqwest = "0.9.22"
