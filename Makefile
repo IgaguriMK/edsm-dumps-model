@@ -1,4 +1,4 @@
-CRATE_NAME:=envoy-dummy-stats
+CRATE_NAME:=edsm-dumps-downloader
 
 .PHONY: all
 all: build check
