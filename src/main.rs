@@ -1,7 +1,8 @@
 use std::io::{stdin, stdout, Write, BufRead};
 
+use tiny_fail::{ErrorMessageExt, Fail};
+
 use edsm_dumps_downloader::download::Downloader;
-use edsm_dumps_downloader::err::{ErrorMessageExt, Fail};
 use edsm_dumps_downloader::target::{EtagStoreage, Mode, Target};
 
 fn main() {

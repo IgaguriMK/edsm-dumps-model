@@ -4,8 +4,7 @@ use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{from_reader, to_writer_pretty};
-
-use crate::err::{ErrorMessageExt, Fail};
+use tiny_fail::{ErrorMessageExt, Fail};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Target {
@@ -69,6 +68,23 @@ impl EtagStoreage {
         };
 
         table.insert(target.url().to_owned(), etag.to_owned());
+
+        let mut f =
+            File::create(&self.path).err_msg(format!("can't create file: {:?}", self.path))?;
+        to_writer_pretty(&mut f, &table).err_msg("can't encode ETag file")?;
+
+        Ok(())
+    }
+
+    pub fn remove(&self, target: &Target) -> Result<(), Fail> {
+        let mut table: BTreeMap<String, String> = if self.path.exists() {
+            let f = File::open(&self.path).err_msg(format!("can't open file: {:?}", self.path))?;
+            from_reader(f).err_msg("can't parse ETag file")?
+        } else {
+            BTreeMap::new()
+        };
+
+        table.remove(target.url());
 
         let mut f =
             File::create(&self.path).err_msg(format!("can't create file: {:?}", self.path))?;

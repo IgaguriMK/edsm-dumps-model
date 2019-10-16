@@ -4,10 +4,10 @@ use std::fs::File;
 use std::io::{self, Write, BufWriter};
 
 use progress::{Bar, SpinningCircle};
-use reqwest::header::{HeaderMap, IF_NONE_MATCH, USER_AGENT};
+use reqwest::header::{HeaderMap, IF_NONE_MATCH, USER_AGENT, ETAG};
 use reqwest::{Client};
+use tiny_fail::{ErrorMessageExt, Fail};
 
-use crate::err::Fail;
 use crate::target::{EtagStoreage, Target};
 
 const TIMEOUT_SECS: u64 = 10;
@@ -76,6 +76,14 @@ impl Downloader {
 
         w.flush()?;
         w.done();
+
+        // save ETag
+        if let Some(etag) = res.headers().get(ETAG) {
+            let etag = etag.to_str().err_msg("can't parse ETag as string")?;
+            self.etags.save(target, etag)?;
+        } else {
+            self.etags.remove(target)?;
+        }
 
         Ok(())
     }
