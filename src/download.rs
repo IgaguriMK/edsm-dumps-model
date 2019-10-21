@@ -1,9 +1,8 @@
 use std::time::Duration;
-use std::fmt;
 use std::fs::File;
 use std::io::{self, Write, BufWriter};
 
-use progress::{Bar, SpinningCircle};
+use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::header::{HeaderMap, IF_NONE_MATCH, USER_AGENT, ETAG};
 use reqwest::{Client};
 use tiny_fail::{ErrorMessageExt, Fail};
@@ -11,7 +10,7 @@ use tiny_fail::{ErrorMessageExt, Fail};
 use crate::target::{EtagStoreage, Target};
 
 const TIMEOUT_SECS: u64 = 10;
-const PROGRESS_SIZE: usize = 1024 * 1024;
+const BAR_TICK_SIZE: u64 = 32 * 1024;
 
 pub struct Downloader {
     head_client: Client,
@@ -92,26 +91,39 @@ impl Downloader {
 #[derive(Debug)]
 struct ProgressWriter<W: Write> {
     inner: BufWriter<W>,
-    progress: Progress,
+    bar: ProgressBar,
 }
 
 impl <W: Write> ProgressWriter<W> {
     fn new(inner: W, size: Option<u64>, name: &str) -> ProgressWriter<W> {
+        let bar = if let Some(size) = size {
+            let bar = ProgressBar::new(size);
+            bar.set_style(ProgressStyle::default_bar().template("{msg} [{bar:40.white/black}] {bytes}/{total_bytes}, {bytes_per_sec}, {eta_precise}"));
+            bar
+        } else {
+            let bar = ProgressBar::new_spinner();
+            bar.set_style(ProgressStyle::default_spinner().template("{spinner} {msg}"));
+            bar
+        };
+
+        bar.set_draw_delta(BAR_TICK_SIZE);
+        bar.set_message(name);
+
         ProgressWriter {
             inner: BufWriter::new(inner),
-            progress: Progress::new(size, name),
+            bar,
         }
     }
 
     fn done(self) {
-        self.progress.done();
+        self.bar.finish();
     }
 }
 
 impl <W: Write> Write for ProgressWriter<W> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         let n = self.inner.write(buf)?;
-        self.progress.add(n);
+        self.bar.inc(n as u64);
         Ok(n)
     }
 
@@ -119,72 +131,3 @@ impl <W: Write> Write for ProgressWriter<W> {
         self.inner.flush()
     }
 }
-
-enum Progress {
-    Bar{bar: Bar, current: usize, total: usize, percent: i32},
-    Spin{spin: SpinningCircle, current: usize},
-}
-
-impl Progress {
-    fn new(size: Option<u64>, name: &str) -> Progress {
-        match size {
-            Some(size) => {
-                let mut bar = Bar::new();
-                bar.set_job_title(name);
-                Progress::Bar{
-                    bar,
-                    current: 0,
-                    total: size as usize,
-                    percent: 0,
-                }
-            } ,
-            None => {
-                let mut spin = SpinningCircle::new();
-                spin.set_job_title(name);
-                Progress::Spin {
-                    spin,
-                    current: 0,
-                }
-            }
-        }
-    }
-
-    fn add(&mut self, amt: usize) {
-        match self {
-            Progress::Bar{bar, current, total, percent} => {
-                *current += amt;
-                let r = (*current as f64) / (*total as f64);
-                let p = (100.0 * r) as i32;
-                if p != *percent {
-                    bar.reach_percent(p);
-                    *percent = p;
-                }
-            }
-            Progress::Spin{spin, current} => {
-                *current += amt;
-                let n = *current / PROGRESS_SIZE;
-                *current %= PROGRESS_SIZE;
-                for _ in 0..n {
-                    spin.tick();
-                }
-            }
-        }
-    }
-
-    fn done(self) {
-        match self {
-            Progress::Bar{mut bar, ..} => bar.jobs_done(),
-            Progress::Spin{spin, ..} => spin.jobs_done(),
-        }
-    }
-}
-
-impl fmt::Debug for Progress {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Progress::Bar{..} => write!(f, "Progress::Bar"),
-            Progress::Spin{..} => write!(f, "Progress::Spin"),
-        }
-    }
-}
-
