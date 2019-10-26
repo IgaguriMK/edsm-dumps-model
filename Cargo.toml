@@ -19,3 +19,12 @@ reqwest = "0.9.22"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0.41"
 tiny_fail = "0.1.0"
+toml = "0.5.3"
+
+[[bin]]
+name = "downloader"
+path = "src/bin/downloader.rs"
+
+[[bin]]
+name = "model_check"
+path = "src/bin/model_check.rs"
