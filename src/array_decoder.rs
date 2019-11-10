@@ -53,13 +53,13 @@ impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
         }
 
         match self.buf.trim() {
-            "" => return Ok(None),
-            "]" => return Ok(None),
-            s => return Ok(Some(s.trim_end_matches(','))),
+            "" => Ok(None),
+            "]" => Ok(None),
+            s => Ok(Some(s.trim_end_matches(','))),
         }
     }
 
-    pub fn next<D: DeserializeOwned>(&mut self) -> Result<Option<D>, Fail> {
+    pub fn read_entry<D: DeserializeOwned>(&mut self) -> Result<Option<D>, Fail> {
         let line_num = self.line;
 
         if let Some(line) = self.read_line()? {

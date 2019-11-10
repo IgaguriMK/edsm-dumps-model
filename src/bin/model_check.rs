@@ -103,7 +103,7 @@ fn check<D: DeserializeOwned>(
     let mut dec = dec.set_progress(progress);
 
     while let Some(_) = dec
-        .next::<D>()
+        .read_entry::<D>()
         .err_msg(format!("While checking '{}'", file_name))?
     {}
 
@@ -114,13 +114,13 @@ struct CheckProgress(ProgressBar);
 
 impl CheckProgress {
     fn new_bar(file_name: &str, size: u64) -> ProgressBar {
-        let bar = ProgressBar::new(size);
-        bar.set_style(ProgressStyle::default_bar().template(
+        let prog_bar = ProgressBar::new(size);
+        prog_bar.set_style(ProgressStyle::default_bar().template(
             "{msg:25} {bar:32.green/white} {bytes:8}/{total_bytes:8}, {bytes_per_sec:9}, Time:{elapsed_precise} ETA:{eta_precise}",
         ));
-        bar.set_draw_delta(1024);
-        bar.set_message(file_name.trim_end_matches(".json"));
-        bar
+        prog_bar.set_draw_delta(1024);
+        prog_bar.set_message(file_name.trim_end_matches(".json"));
+        prog_bar
     }
 }
 

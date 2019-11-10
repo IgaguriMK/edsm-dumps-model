@@ -11,7 +11,6 @@ use toml::from_slice;
 #[serde(rename_all = "snake_case")]
 pub struct Config {
     dumps_dir: Option<PathBuf>,
-    etags_file: Option<PathBuf>,
 }
 
 impl Config {
@@ -27,17 +26,10 @@ impl Config {
         Ok(cfg)
     }
 
-    pub fn dumps_dir<'a>(&'a self) -> Cow<'a, Path> {
+    pub fn dumps_dir(&self) -> Cow<'_, Path> {
         match self.dumps_dir {
             Some(ref v) => Cow::Borrowed(v),
             None => Cow::Owned(".".into()),
-        }
-    }
-
-    pub fn etags_file<'a>(&'a self) -> Cow<'a, Path> {
-        match self.etags_file {
-            Some(ref v) => Cow::Borrowed(v),
-            None => Cow::Owned(self.dumps_dir().join(".etags.json")),
         }
     }
 }
