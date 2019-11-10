@@ -1,19 +1,23 @@
 [package]
-name = "edsm-dumps-downloader"
+name = "edsm-dumps-model"
 version = "0.1.0"
 authors = ["Igaguri <igagurimk@gmail.com>"]
 edition = "2018"
 
 description = "Download and sync EDSM nightly dump files."
 license = "MIT OR Apache-2.0"
-categories = ["command-line-utilities"]
+categories = ["data-structures"]
 keywords = []
 readme = "README.md"
-repository = "https://github.com/IgaguriMK/edsm-dumps-downloader"
+repository = "https://github.com/IgaguriMK/edsm-dumps-model"
+
+default-run = "model_check"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+chrono = {version = "0.4.9", features = ["serde"]}
+clap = "2.33.0"
 indicatif = "0.12.0"
 reqwest = "0.9.22"
 serde = {version = "1.0", features = ["derive"]}
@@ -21,9 +25,6 @@ serde_json = "1.0.41"
 tiny_fail = "0.1.0"
 toml = "0.5.3"
 
-[[bin]]
-name = "downloader"
-path = "src/bin/downloader.rs"
 
 [[bin]]
 name = "model_check"

@@ -1,4 +1,4 @@
-CRATE_NAME:=edsm-dumps-downloader
+CRATE_NAME:=edsm-dumps-model
 
 .PHONY: all
 all: build check

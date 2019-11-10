@@ -1,6 +1,10 @@
-use serde::{Deserialize, Serialize};
+pub mod bgs;
+pub mod body;
+pub mod station;
+pub mod system;
+pub mod system_populated;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename = "camelCase")]
-#[cfg_attr(debug_assertions, serde(deny_unknown_fields))]
-pub struct SystemWithCoordinates {}
+mod dec;
+
+pub use system::{SystemWithCoordinates, SystemWithoutCoordinates};
+pub use system_populated::SystemPopulated;
