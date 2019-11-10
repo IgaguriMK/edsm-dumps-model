@@ -8,6 +8,34 @@ use super::dec::date_format;
 use super::station;
 use super::system;
 
+// Main Type
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct SystemPopulated {
+    pub id: u64,
+    // Attributes
+    pub allegiance: bgs::Allegiance,
+    pub bodies: Vec<body::Body>,
+    pub controlling_faction: bgs::ControllingFaction,
+    pub coords: system::Coords,
+    pub economy: Option<bgs::Economy>,
+    pub factions: Option<Vec<FactionInPopulated>>,
+    pub government: bgs::Government,
+    pub id64: Option<u64>,
+    pub name: String,
+    pub population: u64,
+    pub security: bgs::Security,
+    pub state: Option<bgs::State>,
+    pub stations: Vec<StationInPopulated>,
+    // Metadata
+    #[serde(with = "date_format")]
+    pub date: DateTime<Utc>,
+}
+
+// Field Type
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -52,28 +80,4 @@ pub struct StationInPopulated {
     pub st_type: station::StationType,
     // Metadata
     pub update_time: station::UpdateTime,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub struct SystemPopulated {
-    pub id: u64,
-    // Attributes
-    pub allegiance: bgs::Allegiance,
-    pub bodies: Vec<body::Body>,
-    pub controlling_faction: bgs::ControllingFaction,
-    pub coords: system::Coords,
-    pub economy: Option<bgs::Economy>,
-    pub factions: Option<Vec<FactionInPopulated>>,
-    pub government: bgs::Government,
-    pub id64: Option<u64>,
-    pub name: String,
-    pub population: u64,
-    pub security: bgs::Security,
-    pub state: Option<bgs::State>,
-    pub stations: Vec<StationInPopulated>,
-    // Metadata
-    #[serde(with = "date_format")]
-    pub date: DateTime<Utc>,
 }

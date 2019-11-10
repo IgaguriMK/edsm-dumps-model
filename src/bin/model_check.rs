@@ -10,7 +10,8 @@ use tiny_fail::{ErrorMessageExt, Fail};
 
 use edsm_dumps_model::array_decoder::{ArrayDecoder, Progress};
 use edsm_dumps_model::config::Config;
-use edsm_dumps_model::model::{SystemPopulated, SystemWithCoordinates, SystemWithoutCoordinates};
+use edsm_dumps_model::model::system::{SystemWithCoordinates, SystemWithoutCoordinates};
+use edsm_dumps_model::model::system_populated::SystemPopulated;
 
 fn main() {
     if let Err(fail) = w_main() {

@@ -3,24 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::dec::date_format;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub struct Coords {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
-pub struct EstimatedCoords {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-    pub precision: f32,
-}
+// Main Type
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -48,4 +31,25 @@ pub struct SystemWithoutCoordinates {
     // Metadata
     #[serde(with = "date_format")]
     pub date: DateTime<Utc>,
+}
+
+// Field Type
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Coords {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct EstimatedCoords {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub precision: f32,
 }

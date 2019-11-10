@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::dec::date_format;
 
-// Main Types
+// Main Type
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -19,6 +19,7 @@ pub enum Body {
 pub struct Planet {
     pub id: u64,
     // Attributes
+    pub atmosphere_type: AtmosphereType,
     pub body_id: u64,
     pub distance_to_arrival: f32,
     pub earth_masses: f32,
@@ -34,6 +35,7 @@ pub struct Planet {
     pub sub_type: PlanetSubType,
     pub surface_pressure: Option<f32>,
     pub surface_temperature: f32,
+    pub volcanism_type: VolcanismType,
     // Metadata
     #[serde(with = "date_format")]
     pub update_time: DateTime<Utc>,
@@ -68,7 +70,12 @@ pub struct Star {
     pub update_time: DateTime<Utc>,
 }
 
-// Field Types
+// Field Type
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum AtmosphereType {
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -121,5 +128,12 @@ pub enum SpectralClass {
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
     #[serde(rename = "M (Red dwarf) Star")]
-    MainM,
+    MRedDwarfStar,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum VolcanismType {
+    #[serde(rename = "No Volcanism")]
+    NoVolcanism,
 }
