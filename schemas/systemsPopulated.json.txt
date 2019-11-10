@@ -1,0 +1,279 @@
+pub struct Root {
+    "allegiance": Option<String>,
+    "bodies": Vec<Enum1>,
+    "controllingFaction": Struct13,
+    "coords": Struct14,
+    "date": String,
+    "economy": Option<String>,
+    "factions": Option<Vec<Struct15>>,
+    "government": Option<String>,
+    "id": u64,
+    "id64": u64,
+    "name": String,
+    "population": Option<u64>,
+    "security": String,
+    "state": Option<String>,
+    "stations": Vec<Struct19>,
+}
+
+pub struct Struct0 {
+    "allegiance": Option<String>,
+    "bodies": Vec<Enum1>,
+    "controllingFaction": Struct13,
+    "coords": Struct14,
+    "date": String,
+    "economy": Option<String>,
+    "factions": Option<Vec<Struct15>>,
+    "government": Option<String>,
+    "id": u64,
+    "id64": u64,
+    "name": String,
+    "population": Option<u64>,
+    "security": String,
+    "state": Option<String>,
+    "stations": Vec<Struct19>,
+}
+
+pub struct Struct2 {
+    "argOfPeriapsis": Option<f64>,
+    "atmosphereComposition": Option<Struct3>,
+    "atmosphereType": Option<String>,
+    "axialTilt": Option<f64>,
+    "belts": Option<Vec<Struct4>>,
+    "bodyId": Option<u64>,
+    "distanceToArrival": u64,
+    "earthMasses": f64,
+    "gravity": f64,
+    "id": u64,
+    "id64": Option<u64>,
+    "isLandable": bool,
+    "materials": Option<Struct5>,
+    "name": String,
+    "orbitalEccentricity": Option<f64>,
+    "orbitalInclination": Option<f64>,
+    "orbitalPeriod": Option<f64>,
+    "parents": Option<Vec<Struct6>>,
+    "radius": f64,
+    "reserveLevel": Option<String>,
+    "rings": Option<Vec<Struct7>>,
+    "rotationalPeriod": Option<f64>,
+    "rotationalPeriodTidallyLocked": bool,
+    "semiMajorAxis": Option<f64>,
+    "solidComposition": Option<Struct8>,
+    "subType": String,
+    "surfacePressure": Option<f64>,
+    "surfaceTemperature": u64,
+    "terraformingState": Option<String>,
+    "updateTime": String,
+    "volcanismType": Option<String>,
+}
+
+pub struct Struct3 {
+    "Ammonia": Option<f64>,
+    "Argon": Option<f64>,
+    "Carbon dioxide": Option<f64>,
+    "Helium": Option<f64>,
+    "Hydrogen": Option<f64>,
+    "Iron": Option<f64>,
+    "Methane": Option<f64>,
+    "Neon": Option<f64>,
+    "Nitrogen": Option<f64>,
+    "Oxygen": Option<f64>,
+    "Silicates": Option<f64>,
+    "Sulphur dioxide": Option<f64>,
+    "Water": Option<f64>,
+}
+
+pub struct Struct4 {
+    "innerRadius": u64,
+    "mass": u64,
+    "name": String,
+    "outerRadius": u64,
+    "type": String,
+}
+
+pub struct Struct5 {
+    "Antimony": Option<f64>,
+    "Arsenic": Option<f64>,
+    "Cadmium": Option<f64>,
+    "Carbon": Option<f64>,
+    "Chromium": Option<f64>,
+    "Germanium": Option<f64>,
+    "Iron": f64,
+    "Manganese": Option<f64>,
+    "Mercury": Option<f64>,
+    "Molybdenum": Option<f64>,
+    "Nickel": f64,
+    "Niobium": Option<f64>,
+    "Phosphorus": Option<f64>,
+    "Polonium": Option<f64>,
+    "Ruthenium": Option<f64>,
+    "Selenium": Option<f64>,
+    "Sulphur": Option<f64>,
+    "Technetium": Option<f64>,
+    "Tellurium": Option<f64>,
+    "Tin": Option<f64>,
+    "Tungsten": Option<f64>,
+    "Vanadium": Option<f64>,
+    "Yttrium": Option<f64>,
+    "Zinc": Option<f64>,
+    "Zirconium": Option<f64>,
+}
+
+pub struct Struct6 {
+    "Null": Option<u64>,
+    "Planet": Option<u64>,
+    "Star": Option<u64>,
+}
+
+pub struct Struct7 {
+    "innerRadius": f64,
+    "mass": f64,
+    "name": String,
+    "outerRadius": f64,
+    "type": String,
+}
+
+pub struct Struct8 {
+    "Ice": Option<f64>,
+    "Metal": f64,
+    "Rock": f64,
+}
+
+pub struct Struct9 {
+    "absoluteMagnitude": Option<f64>,
+    "age": u64,
+    "argOfPeriapsis": Option<f64>,
+    "axialTilt": Option<f64>,
+    "belts": Option<Vec<Struct10>>,
+    "bodyId": Option<u64>,
+    "distanceToArrival": u64,
+    "id": u64,
+    "id64": Option<u64>,
+    "isMainStar": bool,
+    "isScoopable": bool,
+    "luminosity": Option<String>,
+    "name": String,
+    "orbitalEccentricity": Option<f64>,
+    "orbitalInclination": Option<f64>,
+    "orbitalPeriod": Option<f64>,
+    "parents": Option<Vec<Struct11>>,
+    "reserveLevel": Option<()>,
+    "rings": Option<Vec<Struct12>>,
+    "rotationalPeriod": Option<f64>,
+    "rotationalPeriodTidallyLocked": bool,
+    "semiMajorAxis": Option<f64>,
+    "solarMasses": f64,
+    "solarRadius": f64,
+    "spectralClass": Option<String>,
+    "subType": String,
+    "surfaceTemperature": u64,
+    "updateTime": String,
+}
+
+pub struct Struct10 {
+    "innerRadius": f64,
+    "mass": f64,
+    "name": String,
+    "outerRadius": u64,
+    "type": String,
+}
+
+pub struct Struct11 {
+    "Null": Option<u64>,
+    "Star": Option<u64>,
+}
+
+pub struct Struct12 {
+    "innerRadius": u64,
+    "mass": u64,
+    "name": String,
+    "outerRadius": u64,
+    "type": String,
+}
+
+pub struct Struct13 {
+    "allegiance": Option<String>,
+    "government": Option<String>,
+    "id": u64,
+    "isPlayer": bool,
+    "name": Option<String>,
+}
+
+pub struct Struct14 {
+    "x": f64,
+    "y": f64,
+    "z": f64,
+}
+
+pub struct Struct15 {
+    "activeStates": Vec<Struct16>,
+    "allegiance": String,
+    "government": String,
+    "happiness": String,
+    "id": u64,
+    "influence": f64,
+    "isPlayer": bool,
+    "lastUpdate": u64,
+    "name": String,
+    "pendingStates": Vec<Struct17>,
+    "recoveringStates": Vec<Struct18>,
+    "state": Option<String>,
+}
+
+pub struct Struct16 {
+    "state": String,
+}
+
+pub struct Struct17 {
+    "state": String,
+    "trend": u64,
+}
+
+pub struct Struct18 {
+    "state": String,
+    "trend": u64,
+}
+
+pub struct Struct19 {
+    "allegiance": String,
+    "body": Option<Struct20>,
+    "controllingFaction": Option<Struct21>,
+    "distanceToArrival": Option<f64>,
+    "economy": String,
+    "government": Option<String>,
+    "haveMarket": bool,
+    "haveOutfitting": bool,
+    "haveShipyard": bool,
+    "id": u64,
+    "marketId": Option<u64>,
+    "name": String,
+    "otherServices": Vec<String>,
+    "secondEconomy": Option<String>,
+    "type": String,
+    "updateTime": Struct22,
+}
+
+pub struct Struct20 {
+    "id": u64,
+    "latitude": Option<f64>,
+    "longitude": Option<f64>,
+    "name": String,
+}
+
+pub struct Struct21 {
+    "id": Option<u64>,
+    "name": String,
+}
+
+pub struct Struct22 {
+    "information": String,
+    "market": Option<String>,
+    "outfitting": Option<String>,
+    "shipyard": Option<String>,
+}
+
+pub enum Enum1 {
+    Struct2(Struct2),
+    Struct9(Struct9),
+}

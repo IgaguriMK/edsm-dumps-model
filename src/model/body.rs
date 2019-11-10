@@ -74,8 +74,7 @@ pub struct Star {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub enum AtmosphereType {
-}
+pub enum AtmosphereType {}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
