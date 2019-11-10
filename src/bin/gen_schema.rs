@@ -37,9 +37,12 @@ fn w_main() -> Result<(), Fail> {
     let dumps_dir = cfg.dumps_dir();
     let mut generator = Generator::new(dumps_dir.as_ref(), matches.value_of("target"), criterias);
 
+    generator.generate("bodies.json")?;
+    generator.generate("powerPlay.json")?;
+    generator.generate("stations.json")?;
     generator.generate("systemsPopulated.json")?;
-    // generator.generate("systemsWithCoordinates.json")?;
-    // generator.generate("systemsWithoutCoordinates.json")?;
+    generator.generate("systemsWithCoordinates.json")?;
+    generator.generate("systemsWithoutCoordinates.json")?;
 
     generator.join()?;
 
@@ -120,7 +123,10 @@ fn gen(
 
     let schema = schema_generator.build();
 
-    let mut w = BufWriter::new(File::create(format!("schemas/{}.txt", file_name))?);
+    let mut w = BufWriter::new(File::create(format!(
+        "schemas/{}.txt",
+        file_name.trim_end_matches(".json")
+    ))?);
     schema.print(&mut w)?;
     w.flush()?;
 

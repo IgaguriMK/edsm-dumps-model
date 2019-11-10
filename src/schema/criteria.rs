@@ -7,9 +7,12 @@ use serde::{Deserialize, Serialize};
 use serde_json::from_reader;
 use tiny_fail::{ErrorMessageExt, Fail};
 
-#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Criteria {
+    #[serde(default)]
     enum_split_filelds: HashMap<String, String>,
+    #[serde(default = "default_enum_string_max")]
+    enum_string_max: usize,
 }
 
 impl Criteria {
@@ -25,6 +28,23 @@ impl Criteria {
     pub fn is_split_enum(&self, field_path: &str) -> Option<&str> {
         self.enum_split_filelds.get(field_path).map(String::as_str)
     }
+
+    pub fn enum_string_max(&self) -> usize {
+        self.enum_string_max
+    }
+}
+
+impl Default for Criteria {
+    fn default() -> Criteria {
+        Criteria {
+            enum_split_filelds: HashMap::new(),
+            enum_string_max: default_enum_string_max(),
+        }
+    }
+}
+
+fn default_enum_string_max() -> usize {
+    64
 }
 
 #[derive(Debug, Clone)]

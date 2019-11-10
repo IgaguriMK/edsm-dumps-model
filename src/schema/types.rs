@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[allow(unused_imports)]
 use serde_json::json;
@@ -7,6 +7,8 @@ use serde_json::Value;
 
 use super::criteria::Criteria;
 
+const MAX_ENUM_VARIANTS: usize = 255;
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Type {
     Null,
@@ -14,7 +16,7 @@ pub enum Type {
     U64,
     I64,
     Float,
-    String,
+    String(StringVariants),
     Array(Types),
     Object(String, ObjectScheme),
 }
@@ -27,9 +29,17 @@ impl Type {
             Type::U64 => TypeKey::U64,
             Type::I64 => TypeKey::I64,
             Type::Float => TypeKey::Float,
-            Type::String => TypeKey::String,
+            Type::String(_) => TypeKey::String,
             Type::Array(_) => TypeKey::Array,
             Type::Object(ty, _) => TypeKey::Object(ty.clone()),
+        }
+    }
+
+    fn unwrap_string(self) -> StringVariants {
+        if let Type::String(variants) = self {
+            variants
+        } else {
+            panic!("Type is not Type::String")
         }
     }
 
@@ -54,6 +64,7 @@ impl Type {
     pub fn from_value(criteria: &Criteria, v: Value) -> Type {
         Type::from_value_path(criteria, "", v)
     }
+
     fn from_value_path(criteria: &Criteria, path: &str, v: Value) -> Type {
         match v {
             Value::Null => Type::Null,
@@ -61,7 +72,7 @@ impl Type {
             Value::Number(x) if x.is_u64() => Type::U64,
             Value::Number(x) if x.is_i64() => Type::I64,
             Value::Number(_) => Type::Float,
-            Value::String(_) => Type::String,
+            Value::String(s) => Type::String(StringVariants::new(s)),
             Value::Array(xs) => {
                 let mut ts = Types::empty();
                 let ch_path = format!("{}[]", path);
@@ -138,6 +149,15 @@ impl Types {
         let key = ty.key();
 
         match key {
+            TypeKey::String => {
+                if let Some(exists) = self.0.remove(&TypeKey::String) {
+                    let mut exists = exists.unwrap_string();
+                    exists.merge(ty.unwrap_string());
+                    self.0.insert(key, Type::String(exists));
+                } else {
+                    self.0.insert(TypeKey::String, ty);
+                }
+            }
             TypeKey::Array => {
                 if let Some(exists) = self.0.remove(&TypeKey::Array) {
                     let mut exists = exists.unwrap_arr();
@@ -274,6 +294,42 @@ impl IntoIterator for ObjectScheme {
 
     fn into_iter(self) -> Self::IntoIter {
         Box::new(self.fields.into_iter())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub enum StringVariants {
+    Few(BTreeSet<String>),
+    Many,
+}
+
+impl StringVariants {
+    fn new(s: String) -> StringVariants {
+        let mut list = BTreeSet::new();
+        list.insert(s);
+        StringVariants::Few(list)
+    }
+
+    fn merge(&mut self, other: StringVariants) {
+        if self.is_many() || other.is_many() {
+            *self = StringVariants::Many;
+        }
+
+        if let StringVariants::Few(ref mut list) = self {
+            if let StringVariants::Few(other_list) = other {
+                list.extend(other_list.into_iter());
+                if list.len() > MAX_ENUM_VARIANTS {
+                    *self = StringVariants::Many;
+                }
+            }
+        }
+    }
+
+    fn is_many(&self) -> bool {
+        match self {
+            StringVariants::Few(_) => false,
+            StringVariants::Many => true,
+        }
     }
 }
 
@@ -416,7 +472,14 @@ mod test {
                 ObjectScheme::from(vec![
                     ("a", vec![Type::U64].into()),
                     ("b", vec![Type::Null, Type::Bool].into()),
-                    ("c", vec![Type::Null, Type::String].into()),
+                    (
+                        "c",
+                        vec![
+                            Type::Null,
+                            Type::String(StringVariants::new("test".to_owned()))
+                        ]
+                        .into()
+                    ),
                 ])
             )]
         );
@@ -446,7 +509,10 @@ mod test {
                     "C".to_owned(),
                     ObjectScheme::from(vec![
                         ("a", vec![Type::U64].into()),
-                        ("c", vec![Type::String].into()),
+                        (
+                            "c",
+                            vec![Type::String(StringVariants::new("test".to_owned()))].into()
+                        ),
                     ])
                 )
             ]

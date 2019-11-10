@@ -8,7 +8,7 @@ use std::io::{self, Write};
 use serde_json::Value;
 
 use criteria::Criteria;
-use types::{ObjectScheme, Type, Types};
+use types::{ObjectScheme, StringVariants, Type, Types};
 
 #[derive(Debug, Clone)]
 pub struct SchemaGenerator {
@@ -30,7 +30,7 @@ impl SchemaGenerator {
     }
 
     pub fn build(self) -> Schema {
-        let mut builder = SchemaBuilder::new();
+        let mut builder = SchemaBuilder::new(self.criteria);
         let root = SchemaType::parse(&mut builder, self.types);
         builder.build(root)
     }
@@ -45,6 +45,7 @@ pub struct Schema {
 
 impl Schema {
     pub fn print<W: Write>(&self, mut w: W) -> io::Result<()> {
+        writeln!(w, "#[derive(Debug, Clone, PartialEq)]")?;
         if self.root.is_struct() {
             let root = self.structs.get(&0).unwrap();
             root.print(&mut w, "Root")?;
@@ -56,14 +57,20 @@ impl Schema {
             return Ok(());
         }
 
-        for (id, s) in self.structs.iter() {
-            writeln!(w)?;
-            s.print(&mut w, &format!("Struct{}", id))?;
+        for (&id, s) in self.structs.iter() {
+            if id > 0 {
+                writeln!(w)?;
+                writeln!(w, "#[derive(Debug, Clone, PartialEq)]")?;
+                s.print(&mut w, &format!("AutoGenStruct{}", id))?;
+            }
         }
 
-        for (id, e) in self.enums.iter() {
-            writeln!(w)?;
-            e.print(&mut w, &format!("Enum{}", id))?;
+        for (&id, e) in self.enums.iter() {
+            if id > 0 {
+                writeln!(w)?;
+                writeln!(w, "#[derive(Debug, Clone, PartialEq)]")?;
+                e.print(&mut w, &format!("AutoGenEnum{}", id))?;
+            }
         }
 
         Ok(())
@@ -72,14 +79,16 @@ impl Schema {
 
 #[derive(Debug, Default, Clone)]
 pub struct SchemaBuilder {
+    criteria: Criteria,
     structs: BTreeMap<u64, Struct>,
     enums: BTreeMap<u64, Enum>,
     id: u64,
 }
 
 impl SchemaBuilder {
-    fn new() -> SchemaBuilder {
+    fn new(criteria: Criteria) -> SchemaBuilder {
         SchemaBuilder {
+            criteria,
             structs: BTreeMap::new(),
             enums: BTreeMap::new(),
             id: 0,
@@ -201,7 +210,22 @@ impl SchemaTypes {
             Type::U64 => SchemaTypes::U64,
             Type::I64 => SchemaTypes::I64,
             Type::Float => SchemaTypes::Float,
-            Type::String => SchemaTypes::String,
+            Type::String(StringVariants::Many) => SchemaTypes::String,
+            Type::String(StringVariants::Few(list)) => {
+                if list.len() <= builder.criteria.enum_string_max() {
+                    let mut e = Enum::new();
+                    let id = builder.next_id();
+
+                    for v in list.into_iter() {
+                        e.add(Variant::Primitive(v), SchemaTypes::Unit);
+                    }
+
+                    builder.add_enum(id, e);
+                    SchemaTypes::Enum(id)
+                } else {
+                    SchemaTypes::String
+                }
+            }
             Type::Array(ts) => {
                 let t = SchemaType::parse(builder, ts);
                 SchemaTypes::Array(Box::new(t))
@@ -240,8 +264,8 @@ impl fmt::Display for SchemaTypes {
             SchemaTypes::Float => write!(f, "f64"),
             SchemaTypes::String => write!(f, "String"),
             SchemaTypes::Array(typ) => write!(f, "Vec<{}>", typ),
-            SchemaTypes::Struct(id) => write!(f, "Struct{}", id),
-            SchemaTypes::Enum(id) => write!(f, "Enum{}", id),
+            SchemaTypes::Struct(id) => write!(f, "AutoGenStruct{}", id),
+            SchemaTypes::Enum(id) => write!(f, "AutoGenEnum{}", id),
         }
     }
 }
@@ -262,13 +286,72 @@ impl Struct {
     }
 
     pub fn print<W: Write>(&self, mut w: W, type_name: &str) -> io::Result<()> {
+        let case = self.detect_case();
+
+        writeln!(w, "#[serde(rename_all = \"{}\")]", case)?;
         writeln!(w, "pub struct {} {{", type_name)?;
         for (k, t) in self.0.iter() {
-            writeln!(w, "    \"{}\": {},", k, t)?;
+            let rename = snake_case(k);
+            if &case.apply(&rename) != k {
+                writeln!(w, "    #[serde(rename = \"{}\")]", k)?;
+            }
+            writeln!(w, "    {}: {},", rename, t)?;
         }
         writeln!(w, "}}")?;
 
         Ok(())
+    }
+
+    fn detect_case(&self) -> Case {
+        let mut c = 0usize;
+        let mut p = 0usize;
+        let mut s = 0usize;
+
+        for k in self.0.keys() {
+            if &camel_case(k) == k {
+                c += 1;
+            }
+            if &pascal_case(k) == k {
+                p += 1;
+            }
+            if &snake_case(k) == k {
+                s += 1;
+            }
+        }
+
+        if c >= p && c >= s {
+            Case::Camel
+        } else if p >= s {
+            Case::Pascal
+        } else {
+            Case::Snake
+        }
+    }
+}
+
+enum Case {
+    Camel,
+    Pascal,
+    Snake,
+}
+
+impl Case {
+    fn apply(&self, s: &str) -> String {
+        match self {
+            Case::Camel => camel_case(s),
+            Case::Pascal => pascal_case(s),
+            Case::Snake => snake_case(s),
+        }
+    }
+}
+
+impl fmt::Display for Case {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Case::Camel => write!(f, "camelCase"),
+            Case::Pascal => write!(f, "PascalCase"),
+            Case::Snake => write!(f, "snake_case"),
+        }
     }
 }
 
@@ -287,7 +370,11 @@ impl Enum {
     pub fn print<W: Write>(&self, mut w: W, type_name: &str) -> io::Result<()> {
         writeln!(w, "pub enum {} {{", type_name)?;
         for (k, t) in self.0.iter() {
-            writeln!(w, "    {}({}),", k, t)?;
+            k.print(&mut w)?;
+            match t {
+                SchemaTypes::Unit => writeln!(w, ",")?,
+                t => writeln!(w, "({}),", t)?,
+            }
         }
         writeln!(w, "}}")?;
 
@@ -306,14 +393,121 @@ impl Variant {
     fn primitive(s: &str) -> Variant {
         Variant::Primitive(s.to_owned())
     }
+
+    pub fn print<W: Write>(&self, mut w: W) -> io::Result<()> {
+        match self {
+            Variant::Primitive(s) => {
+                let v = pascal_case(s);
+                if s != &v {
+                    writeln!(w, "    #[serde(rename = \"{}\")]", s)?;
+                }
+                write!(w, "    {}", v)
+            }
+            Variant::Struct(id) => write!(w, "    AutoGenStruct{}", id),
+            Variant::Enum(id) => write!(w, "    AutoGenEnum{}", id),
+        }
+    }
 }
 
-impl fmt::Display for Variant {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Variant::Primitive(s) => write!(f, "{}", s),
-            Variant::Struct(id) => write!(f, "Struct{}", id),
-            Variant::Enum(id) => write!(f, "Enum{}", id),
+fn snake_case(s: &str) -> String {
+    let parts = into_parts(s);
+    parts.join("_")
+}
+
+fn pascal_case(s: &str) -> String {
+    let mut res = String::with_capacity(s.len());
+
+    for s in into_parts(s) {
+        res.push_str(&first_cap(&s));
+    }
+
+    res
+}
+
+fn camel_case(s: &str) -> String {
+    let mut res = String::with_capacity(s.len());
+
+    for (i, s) in into_parts(s).into_iter().enumerate() {
+        if i == 0 {
+            res.push_str(&s);
+        } else {
+            res.push_str(&first_cap(&s));
         }
+    }
+
+    res
+}
+
+fn into_parts(s: &str) -> Vec<String> {
+    let mut parts = Vec::new();
+    let mut current = String::new();
+    let mut prev_lower = false;
+
+    for ch in s.chars() {
+        if ch.is_ascii_uppercase() {
+            if prev_lower {
+                parts.push(current);
+                current = String::new();
+            }
+            current.push(ch.to_ascii_lowercase());
+            prev_lower = false;
+        } else if ch.is_ascii_lowercase() || ch.is_numeric() {
+            current.push(ch);
+            prev_lower = true;
+        } else if !current.is_empty() {
+            parts.push(current);
+            current = String::new();
+            prev_lower = false;
+        }
+    }
+
+    if !current.is_empty() {
+        parts.push(current);
+    }
+    parts
+}
+
+fn first_cap(s: &str) -> String {
+    s.chars()
+        .enumerate()
+        .map(|(i, ch)| if i == 0 { ch.to_ascii_uppercase() } else { ch })
+        .collect()
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_snake_case() {
+        let s = "Civil liberty";
+        assert_eq!(&snake_case(s), "civil_liberty");
+    }
+
+    #[test]
+    fn test_pascal_case() {
+        let s = "Civil liberty";
+        assert_eq!(&pascal_case(s), "CivilLiberty");
+    }
+
+    #[test]
+    fn test_camel_case() {
+        let s = "Civil liberty";
+        assert_eq!(&camel_case(s), "civilLiberty");
+    }
+
+    #[test]
+    fn test_into_parts() {
+        let s = "Civil liberty";
+        assert_eq!(
+            into_parts(s),
+            vec!["civil".to_owned(), "liberty".to_owned()]
+        );
+    }
+
+    #[test]
+    fn test_first_cap() {
+        let s = "sample";
+        assert_eq!(&first_cap(s), "Sample");
     }
 }
