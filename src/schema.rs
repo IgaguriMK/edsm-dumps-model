@@ -45,7 +45,10 @@ pub struct Schema {
 
 impl Schema {
     pub fn print<W: Write>(&self, mut w: W) -> io::Result<()> {
-        writeln!(w, "#[derive(Debug, Clone, PartialEq)]")?;
+        writeln!(
+            w,
+            "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
+        )?;
         if self.root.is_struct() {
             let root = self.structs.get(&0).unwrap();
             root.print(&mut w, "Root")?;
@@ -60,16 +63,22 @@ impl Schema {
         for (&id, s) in self.structs.iter() {
             if id > 0 {
                 writeln!(w)?;
-                writeln!(w, "#[derive(Debug, Clone, PartialEq)]")?;
-                s.print(&mut w, &format!("AutoGenStruct{}", id))?;
+                writeln!(
+                    w,
+                    "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
+                )?;
+                s.print(&mut w, &format!("AutoGen{}Struct", id))?;
             }
         }
 
         for (&id, e) in self.enums.iter() {
             if id > 0 {
                 writeln!(w)?;
-                writeln!(w, "#[derive(Debug, Clone, PartialEq)]")?;
-                e.print(&mut w, &format!("AutoGenEnum{}", id))?;
+                writeln!(
+                    w,
+                    "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
+                )?;
+                e.print(&mut w, &format!("AutoGen{}Enum", id))?;
             }
         }
 
@@ -264,8 +273,8 @@ impl fmt::Display for SchemaTypes {
             SchemaTypes::Float => write!(f, "f64"),
             SchemaTypes::String => write!(f, "String"),
             SchemaTypes::Array(typ) => write!(f, "Vec<{}>", typ),
-            SchemaTypes::Struct(id) => write!(f, "AutoGenStruct{}", id),
-            SchemaTypes::Enum(id) => write!(f, "AutoGenEnum{}", id),
+            SchemaTypes::Struct(id) => write!(f, "AutoGen{}Struct", id),
+            SchemaTypes::Enum(id) => write!(f, "AutoGen{}Enum", id),
         }
     }
 }
@@ -403,8 +412,8 @@ impl Variant {
                 }
                 write!(w, "    {}", v)
             }
-            Variant::Struct(id) => write!(w, "    AutoGenStruct{}", id),
-            Variant::Enum(id) => write!(w, "    AutoGenEnum{}", id),
+            Variant::Struct(id) => write!(w, "    AutoGen{}Struct", id),
+            Variant::Enum(id) => write!(w, "    AutoGen{}Enum", id),
         }
     }
 }

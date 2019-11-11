@@ -6,17 +6,23 @@ use super::dec::{date_format, date_format_opt};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum OtherService {
+    #[serde(rename = "Black Market")]
+    BlackMarket,
     Contacts,
     #[serde(rename = "Crew Lounge")]
     CrewLounge,
     #[serde(rename = "Interstellar Factors Contact")]
     InterstellarFactorsContact,
+    #[serde(rename = "Material Trader")]
+    MaterialTrader,
     Missions,
     Refuel,
     Repair,
     Restock,
     #[serde(rename = "Search and Rescue")]
     SearchAndRescue,
+    #[serde(rename = "Technology Broker")]
+    TechnologyBroker,
     Tuning,
     #[serde(rename = "Universal Cartographics")]
     UniversalCartographics,
@@ -28,6 +34,8 @@ pub enum OtherService {
 pub struct StationBody {
     pub id: u64,
     // Attributes
+    pub latitude: Option<f64>,
+    pub longitude: Option<f64>,
     pub name: String,
 }
 

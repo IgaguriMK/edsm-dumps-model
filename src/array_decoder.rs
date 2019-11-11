@@ -1,8 +1,9 @@
 use std::io::BufRead;
 
-use serde::de::DeserializeOwned;
 use serde_json::from_str;
 use tiny_fail::{ErrorMessageExt, Fail};
+
+use crate::model::RootEntry;
 
 const ERROR_COLOR_LEN: usize = 20;
 
@@ -59,11 +60,12 @@ impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
         }
     }
 
-    pub fn read_entry<D: DeserializeOwned>(&mut self) -> Result<Option<D>, Fail> {
+    pub fn read_entry<D: RootEntry>(&mut self) -> Result<Option<D>, Fail> {
         let line_num = self.line;
 
         if let Some(line) = self.read_line()? {
-            let v = from_str(line).map_err(|e| {
+            let line = D::pre_filter(line);
+            let v = from_str(line.as_ref()).map_err(|e| {
                 let err_pos = if e.column() > 0 { e.column() - 1 } else { 0 };
 
                 let (line_before, line_after) = line.split_at(err_pos);

@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::dec::date_format;
+use super::RootEntry;
 
 // Main Type
 
@@ -19,6 +20,8 @@ pub struct SystemWithCoordinates {
     pub date: DateTime<Utc>,
 }
 
+impl RootEntry for SystemWithCoordinates {}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -32,6 +35,8 @@ pub struct SystemWithoutCoordinates {
     #[serde(with = "date_format")]
     pub date: DateTime<Utc>,
 }
+
+impl RootEntry for SystemWithoutCoordinates {}
 
 // Field Type
 

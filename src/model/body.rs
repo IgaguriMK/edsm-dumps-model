@@ -1,7 +1,10 @@
+use std::borrow::Cow;
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::dec::date_format;
+use super::RootEntry;
 
 // Main Type
 
@@ -11,6 +14,32 @@ use super::dec::date_format;
 pub enum Body {
     Planet(Planet),
     Star(Star),
+    #[serde(rename = "null")]
+    Unknown(Unknown),
+}
+
+impl RootEntry for Body {
+    fn pre_filter(s: &str) -> Cow<'_, str> {
+        let null_pos = s.find(r#""type":null"#);
+        let first_compound = match (s.find(":{"), s.find("[")) {
+            (None, None) => None,
+            (Some(x), None) => Some(x),
+            (None, Some(y)) => Some(y),
+            (Some(x), Some(y)) => Some(x.min(y)),
+        };
+
+        let type_is_null = match (null_pos, first_compound) {
+            (None, _) => false,
+            (Some(_), None) => true,
+            (Some(n), Some(o)) => n < o,
+        };
+
+        if type_is_null {
+            Cow::Owned(s.replacen(r#""type":null"#, r#""type":"null""#, 1))
+        } else {
+            Cow::Borrowed(s)
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -19,23 +48,38 @@ pub enum Body {
 pub struct Planet {
     pub id: u64,
     // Attributes
-    pub atmosphere_type: AtmosphereType,
-    pub body_id: u64,
-    pub distance_to_arrival: f32,
-    pub earth_masses: f32,
-    pub gravity: f32,
-    pub id64: u64,
+    pub arg_of_periapsis: Option<f64>,
+    pub atmosphere_composition: Option<AtmosphereComposition>,
+    pub atmosphere_type: Option<String>,
+    pub axial_tilt: Option<f64>,
+    pub belts: Option<Vec<Belt>>,
+    pub body_id: Option<u64>,
+    pub distance_to_arrival: u64,
+    pub earth_masses: f64,
+    pub gravity: Option<f64>,
+    pub id64: Option<u64>,
     pub is_landable: bool,
+    pub materials: Option<Materials>,
     pub name: String,
-    #[serde(flatten)]
-    pub orbital_elements: OrbitalElements,
-    pub radius: f32,
-    #[serde(flatten)]
-    pub rotational_elements: RotationalElements,
+    pub orbital_eccentricity: Option<f64>,
+    pub orbital_inclination: Option<f64>,
+    pub orbital_period: Option<f64>,
+    pub parents: Option<Vec<Parent>>,
+    pub radius: f64,
+    pub reserve_level: Option<ReserveLevel>,
+    pub rings: Option<Vec<Ring>>,
+    pub rotational_period: Option<f64>,
+    pub rotational_period_tidally_locked: bool,
+    pub semi_major_axis: Option<f64>,
+    pub solid_composition: Option<SolidComposition>,
     pub sub_type: PlanetSubType,
-    pub surface_pressure: Option<f32>,
-    pub surface_temperature: f32,
-    pub volcanism_type: VolcanismType,
+    pub surface_pressure: Option<f64>,
+    pub surface_temperature: u64,
+    pub system_id: Option<u64>,
+    pub system_id64: Option<u64>,
+    pub system_name: Option<String>,
+    pub terraforming_state: Option<TerraformingState>,
+    pub volcanism_type: Option<VolcanismType>,
     // Metadata
     #[serde(with = "date_format")]
     pub update_time: DateTime<Utc>,
@@ -47,24 +91,54 @@ pub struct Planet {
 pub struct Star {
     pub id: u64,
     // Attributes
-    pub absolute_magnitude: f32,
+    pub absolute_magnitude: Option<f64>,
     pub age: u64,
-    pub body_id: u64,
-    pub distance_to_arrival: f32,
-    pub id64: u64,
+    pub arg_of_periapsis: Option<f64>,
+    pub axial_tilt: Option<f64>,
+    pub belts: Option<Vec<Belt>>,
+    pub body_id: Option<u64>,
+    pub distance_to_arrival: u64,
+    pub id64: Option<u64>,
     pub is_main_star: bool,
     pub is_scoopable: bool,
-    pub luminosity: Luminosity,
+    pub luminosity: Option<Luminosity>,
     pub name: String,
-    #[serde(flatten)]
-    pub orbital_elements: OrbitalElements,
-    #[serde(flatten)]
-    pub rotational_elements: RotationalElements,
-    pub solar_masses: f32,
-    pub solar_radius: f32,
-    pub spectral_class: SpectralClass,
+    pub orbital_eccentricity: Option<f64>,
+    pub orbital_inclination: Option<f64>,
+    pub orbital_period: Option<f64>,
+    pub parents: Option<Vec<Parent>>,
+    pub reserve_level: Option<ReserveLevel>,
+    pub rings: Option<Vec<Ring>>,
+    pub rotational_period: Option<f64>,
+    pub rotational_period_tidally_locked: bool,
+    pub semi_major_axis: Option<f64>,
+    pub solar_masses: f64,
+    pub solar_radius: f64,
+    pub spectral_class: Option<String>,
     pub sub_type: StarSubType,
-    pub surface_temperature: f32,
+    pub surface_temperature: u64,
+    pub system_id: Option<u64>,
+    pub system_id64: Option<u64>,
+    pub system_name: Option<String>,
+    // Metadata
+    #[serde(with = "date_format")]
+    pub update_time: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Unknown {
+    pub id: u64,
+    // Attributes
+    pub distance_to_arrival: u64,
+    pub id64: Option<u64>,
+    pub name: String,
+    pub system_id: Option<u64>,
+    pub system_id64: Option<u64>,
+    pub system_name: Option<String>,
+    pub terraforming_state: Option<TerraformingState>,
+    pub volcanism_type: Option<VolcanismType>,
     // Metadata
     #[serde(with = "date_format")]
     pub update_time: DateTime<Utc>,
@@ -72,67 +146,355 @@ pub struct Star {
 
 // Field Type
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub enum AtmosphereType {}
+pub enum AsteroidType {
+    Icy,
+    #[serde(rename = "Metal Rich")]
+    MetalRich,
+    Metallic,
+    Rocky,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct AtmosphereComposition {
+    pub ammonia: Option<f64>,
+    pub argon: Option<f64>,
+    #[serde(rename = "Carbon dioxide")]
+    pub carbon_dioxide: Option<f64>,
+    pub helium: Option<f64>,
+    pub hydrogen: Option<f64>,
+    pub iron: Option<f64>,
+    pub methane: Option<f64>,
+    pub neon: Option<f64>,
+    pub nitrogen: Option<f64>,
+    pub oxygen: Option<f64>,
+    pub silicates: Option<f64>,
+    #[serde(rename = "Sulphur dioxide")]
+    pub sulphur_dioxide: Option<f64>,
+    pub water: Option<f64>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Belt {
+    pub inner_radius: f64,
+    pub mass: f64,
+    pub name: String,
+    pub outer_radius: f64,
+    #[serde(rename = "type")]
+    pub typ: Option<AsteroidType>,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum Luminosity {
+    O,
+    I,
+    Ia,
+    Ia0,
+    Iab,
+    Ib,
+    II,
+    IIa,
+    IIab,
+    IIb,
+    III,
+    IIIa,
+    IIIab,
+    IIIb,
+    IV,
+    IVa,
+    IVab,
+    IVb,
     V,
+    Va,
+    Vab,
+    Vb,
+    Vz,
+    VI,
+    VII,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
 #[serde(deny_unknown_fields)]
-pub struct OrbitalElements {
-    pub arg_of_periapsis: Option<f32>,
-    pub orbital_eccentricity: Option<f32>,
-    pub orbital_inclination: Option<f32>,
-    pub orbital_period: Option<f32>,
-    pub parents: Option<Vec<Parent>>,
-    pub semi_major_axis: Option<f32>,
+pub struct Materials {
+    pub antimony: Option<f64>,
+    pub arsenic: Option<f64>,
+    pub cadmium: Option<f64>,
+    pub carbon: Option<f64>,
+    pub chromium: Option<f64>,
+    pub germanium: Option<f64>,
+    pub iron: Option<f64>,
+    pub manganese: Option<f64>,
+    pub mercury: Option<f64>,
+    pub molybdenum: Option<f64>,
+    pub nickel: Option<f64>,
+    pub niobium: Option<f64>,
+    pub phosphorus: Option<f64>,
+    pub polonium: Option<f64>,
+    pub ruthenium: Option<f64>,
+    pub selenium: Option<f64>,
+    pub sulphur: Option<f64>,
+    pub technetium: Option<f64>,
+    pub tellurium: Option<f64>,
+    pub tin: Option<f64>,
+    pub tungsten: Option<f64>,
+    pub vanadium: Option<f64>,
+    pub yttrium: Option<f64>,
+    pub zinc: Option<f64>,
+    pub zirconium: Option<f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum Parent {
-    Star(u64),
     Null(u64),
+    Planet(u64),
+    Star(u64),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
+    // gas ginat
+    #[serde(rename = "Class I gas giant")]
+    ClassIGasGiant,
+    #[serde(rename = "Class II gas giant")]
+    ClassIiGasGiant,
+    #[serde(rename = "Class III gas giant")]
+    ClassIiiGasGiant,
+    #[serde(rename = "Class IV gas giant")]
+    ClassIvGasGiant,
+    #[serde(rename = "Class V gas giant")]
+    ClassVGasGiant,
+    #[serde(rename = "Gas giant with ammonia-based life")]
+    GasGiantWithAmmoniaBasedLife,
+    #[serde(rename = "Gas giant with water-based life")]
+    GasGiantWithWaterBasedLife,
+    #[serde(rename = "Helium gas giant")]
+    HeliumGasGiant,
+    #[serde(rename = "Helium-rich gas giant")]
+    HeliumRichGasGiant,
+    #[serde(rename = "Water giant")]
+    WaterGiant,
+    // terrestrial planet
+    #[serde(rename = "Ammonia world")]
+    AmmoniaWorld,
+    #[serde(rename = "Earth-like world")]
+    EarthLikeWorld,
     #[serde(rename = "High metal content world")]
     HighMetalContentWorld,
+    #[serde(rename = "Icy body")]
+    IcyBody,
+    #[serde(rename = "Metal-rich body")]
+    MetalRichBody,
+    #[serde(rename = "Rocky Ice world")]
+    RockyIceWorld,
+    #[serde(rename = "Rocky body")]
+    RockyBody,
+
+    #[serde(rename = "Water world")]
+    WaterWorld,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum ReserveLevel {
+    Common,
+    Depleted,
+    Low,
+    Major,
+    Pristine,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
-pub struct RotationalElements {
-    pub axial_tilt: Option<f32>,
-    pub rotational_period: f32,
-    pub rotational_period_tidally_locked: bool,
+pub struct Ring {
+    pub inner_radius: f64,
+    pub mass: f64,
+    pub name: String,
+    pub outer_radius: f64,
+    #[serde(rename = "type")]
+    pub typ: Option<AsteroidType>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
 #[serde(deny_unknown_fields)]
-pub enum SpectralClass {
-    M9,
+pub struct SolidComposition {
+    #[serde(default)]
+    pub ice: f64,
+    #[serde(default)]
+    pub metal: f64,
+    #[serde(default)]
+    pub rock: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
+    // Main sequence & giants (scoopable)
+    #[serde(rename = "O (Blue-White) Star")]
+    OBlueWhiteStar,
+    #[serde(rename = "B (Blue-White super giant) Star")]
+    BBlueWhiteSuperGiantStar,
+    #[serde(rename = "B (Blue-White) Star")]
+    BBlueWhiteStar,
+    #[serde(rename = "A (Blue-White super giant) Star")]
+    ABlueWhiteSuperGiantStar,
+    #[serde(rename = "A (Blue-White) Star")]
+    ABlueWhiteStar,
+    #[serde(rename = "F (White super giant) Star")]
+    FWhiteSuperGiantStar,
+    #[serde(rename = "F (White) Star")]
+    FWhiteStar,
+    #[serde(rename = "G (White-Yellow super giant) Star")]
+    GWhiteYellowSuperGiantStar,
+    #[serde(rename = "G (White-Yellow) Star")]
+    GWhiteYellowStar,
+    #[serde(rename = "K (Yellow-Orange giant) Star")]
+    KYellowOrangeGiantStar,
+    #[serde(rename = "K (Yellow-Orange) Star")]
+    KYellowOrangeStar,
     #[serde(rename = "M (Red dwarf) Star")]
     MRedDwarfStar,
+    #[serde(rename = "M (Red giant) Star")]
+    MRedGiantStar,
+    #[serde(rename = "M (Red super giant) Star")]
+    MRedSuperGiantStar,
+    // Brown dwarf
+    #[serde(rename = "L (Brown dwarf) Star")]
+    LBrownDwarfStar,
+    #[serde(rename = "T (Brown dwarf) Star")]
+    TBrownDwarfStar,
+    #[serde(rename = "Y (Brown dwarf) Star")]
+    YBrownDwarfStar,
+    // Proto star
+    #[serde(rename = "Herbig Ae/Be Star")]
+    HerbigAeBeStar,
+    #[serde(rename = "T Tauri Star")]
+    TTauriStar,
+    // Carbon star
+    #[serde(rename = "C Star")]
+    CStar,
+    #[serde(rename = "CJ Star")]
+    CjStar,
+    #[serde(rename = "CN Star")]
+    CnStar,
+    #[serde(rename = "MS-type Star")]
+    MSTypeStar,
+    #[serde(rename = "S-type Star")]
+    STypeStar,
+    // Wolf-Rayet star
+    #[serde(rename = "Wolf-Rayet Star")]
+    WolfRayetStar,
+    #[serde(rename = "Wolf-Rayet C Star")]
+    WolfRayetCStar,
+    #[serde(rename = "Wolf-Rayet N Star")]
+    WolfRayetNStar,
+    #[serde(rename = "Wolf-Rayet NC Star")]
+    WolfRayetNcStar,
+    #[serde(rename = "Wolf-Rayet O Star")]
+    WolfRayetOStar,
+    // White dwarf
+    #[serde(rename = "White Dwarf (D) Star")]
+    WhiteDwarfDStar,
+    #[serde(rename = "White Dwarf (DA) Star")]
+    WhiteDwarfDaStar,
+    #[serde(rename = "White Dwarf (DAB) Star")]
+    WhiteDwarfDabStar,
+    #[serde(rename = "White Dwarf (DAV) Star")]
+    WhiteDwarfDavStar,
+    #[serde(rename = "White Dwarf (DAZ) Star")]
+    WhiteDwarfDazStar,
+    #[serde(rename = "White Dwarf (DB) Star")]
+    WhiteDwarfDbStar,
+    #[serde(rename = "White Dwarf (DBV) Star")]
+    WhiteDwarfDbvStar,
+    #[serde(rename = "White Dwarf (DBZ) Star")]
+    WhiteDwarfDbzStar,
+    #[serde(rename = "White Dwarf (DC) Star")]
+    WhiteDwarfDcStar,
+    #[serde(rename = "White Dwarf (DCV) Star")]
+    WhiteDwarfDcvStar,
+    #[serde(rename = "White Dwarf (DQ) Star")]
+    WhiteDwarfDqStar,
+    // Non sequence
+    #[serde(rename = "Neutron Star")]
+    NeutronStar,
+    #[serde(rename = "Black Hole")]
+    BlackHole,
+    #[serde(rename = "Supermassive Black Hole")]
+    SupermassiveBlackHole,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum TerraformingState {
+    #[serde(rename = "Candidate for terraforming")]
+    CandidateForTerraforming,
+    #[serde(rename = "Not terraformable")]
+    NotTerraformable,
+    Terraformed,
+    Terraforming,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum VolcanismType {
-    #[serde(rename = "No Volcanism")]
+    #[serde(rename = "Ammonia Magma")]
+    AmmoniaMagma,
+    #[serde(rename = "Carbon Dioxide Geysers")]
+    CarbonDioxideGeysers,
+    #[serde(rename = "Major Carbon Dioxide Geysers")]
+    MajorCarbonDioxideGeysers,
+    #[serde(rename = "Major Metallic Magma")]
+    MajorMetallicMagma,
+    #[serde(rename = "Major Rocky Magma")]
+    MajorRockyMagma,
+    #[serde(rename = "Major Silicate Vapour Geysers")]
+    MajorSilicateVapourGeysers,
+    #[serde(rename = "Major Water Geysers")]
+    MajorWaterGeysers,
+    #[serde(rename = "Major Water Magma")]
+    MajorWaterMagma,
+    #[serde(rename = "Metallic Magma")]
+    MetallicMagma,
+    #[serde(rename = "Methane Magma")]
+    MethaneMagma,
+    #[serde(rename = "Minor Ammonia Magma")]
+    MinorAmmoniaMagma,
+    #[serde(rename = "Minor Carbon Dioxide Geysers")]
+    MinorCarbonDioxideGeysers,
+    #[serde(rename = "Minor Metallic Magma")]
+    MinorMetallicMagma,
+    #[serde(rename = "Minor Methane Magma")]
+    MinorMethaneMagma,
+    #[serde(rename = "Minor Nitrogen Magma")]
+    MinorNitrogenMagma,
+    #[serde(rename = "Minor Rocky Magma")]
+    MinorRockyMagma,
+    #[serde(rename = "Minor Silicate Vapour Geysers")]
+    MinorSilicateVapourGeysers,
+    #[serde(rename = "Minor Water Geysers")]
+    MinorWaterGeysers,
+    #[serde(rename = "Minor Water Magma")]
+    MinorWaterMagma,
+    #[serde(rename = "Nitrogen Magma")]
+    NitrogenMagma,
+    #[serde(rename = "No volcanism")]
     NoVolcanism,
+    #[serde(rename = "Rocky Magma")]
+    RockyMagma,
+    #[serde(rename = "Silicate Vapour Geysers")]
+    SilicateVapourGeysers,
+    #[serde(rename = "Water Geysers")]
+    WaterGeysers,
+    #[serde(rename = "Water Magma")]
+    WaterMagma,
 }

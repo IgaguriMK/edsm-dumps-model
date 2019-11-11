@@ -1,17 +1,19 @@
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{stderr, BufReader, Write};
 use std::path::{Path, PathBuf};
-use std::thread::spawn;
+use std::thread::{spawn, sleep};
+use std::time::Duration;
 
 use clap::{App, Arg};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use serde::de::DeserializeOwned;
 use tiny_fail::{ErrorMessageExt, Fail};
 
 use edsm_dumps_model::array_decoder::{ArrayDecoder, Progress};
 use edsm_dumps_model::config::Config;
+use edsm_dumps_model::model::body::Body;
 use edsm_dumps_model::model::system::{SystemWithCoordinates, SystemWithoutCoordinates};
 use edsm_dumps_model::model::system_populated::SystemPopulated;
+use edsm_dumps_model::model::RootEntry;
 
 fn main() {
     if let Err(fail) = w_main() {
@@ -36,6 +38,7 @@ fn w_main() -> Result<(), Fail> {
     let dumps_dir = cfg.dumps_dir();
     let mut checker = Checker::new(dumps_dir.as_ref(), matches.value_of("target"));
 
+    checker.check_parse::<Body>("bodies.json")?;
     checker.check_parse::<SystemPopulated>("systemsPopulated.json")?;
     checker.check_parse::<SystemWithCoordinates>("systemsWithCoordinates.json")?;
     checker.check_parse::<SystemWithoutCoordinates>("systemsWithoutCoordinates.json")?;
@@ -60,7 +63,7 @@ impl<'a> Checker<'a> {
         }
     }
 
-    fn check_parse<D: DeserializeOwned>(&mut self, file_name: &str) -> Result<(), Fail> {
+    fn check_parse<D: RootEntry>(&mut self, file_name: &str) -> Result<(), Fail> {
         if let Some(check_target) = self.check_target {
             if check_target != file_name {
                 return Ok(());
@@ -78,7 +81,11 @@ impl<'a> Checker<'a> {
 
         spawn(move || {
             if let Err(e) = check::<D>(path, progress, file_name) {
-                eprintln!("{}", e);
+                let err_out = stderr();
+                let mut err_out_lock = err_out.lock();
+                writeln!(err_out_lock, "{}", e).unwrap();
+                err_out_lock.flush().unwrap();
+                sleep(Duration::from_millis(100));
                 std::process::exit(1);
             }
         });
@@ -92,7 +99,7 @@ impl<'a> Checker<'a> {
     }
 }
 
-fn check<D: DeserializeOwned>(
+fn check<D: RootEntry>(
     path: PathBuf,
     progress: CheckProgress,
     file_name: String,

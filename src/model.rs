@@ -6,5 +6,14 @@ pub mod system_populated;
 
 mod dec;
 
-pub use system::{SystemWithCoordinates, SystemWithoutCoordinates};
-pub use system_populated::SystemPopulated;
+use std::borrow::Cow;
+
+use serde::de::DeserializeOwned;
+
+pub trait RootEntry: DeserializeOwned {
+    fn pre_filter(s: &str) -> Cow<'_, str> {
+        Cow::Borrowed(s)
+    }
+}
+
+impl RootEntry for serde_json::Value {}
