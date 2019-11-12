@@ -6,7 +6,7 @@ use super::RootEntry;
 
 // Main Type
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct SystemWithCoordinates {
@@ -22,7 +22,7 @@ pub struct SystemWithCoordinates {
 
 impl RootEntry for SystemWithCoordinates {}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct SystemWithoutCoordinates {
@@ -40,7 +40,7 @@ impl RootEntry for SystemWithoutCoordinates {}
 
 // Field Type
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Coords {
@@ -49,7 +49,7 @@ pub struct Coords {
     pub z: f32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct EstimatedCoords {

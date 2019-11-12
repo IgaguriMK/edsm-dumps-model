@@ -7,7 +7,7 @@ use super::RootEntry;
 
 // Main Type
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Station {
@@ -16,7 +16,7 @@ pub struct Station {
     pub allegiance: Option<bgs::Allegiance>,
     pub body: Option<StationBody>,
     pub controlling_faction: Option<bgs::ControllingFaction>,
-    pub distance_to_arrival: Option<f64>,
+    pub distance_to_arrival: Option<f32>,
     pub economy: Option<bgs::Economy>,
     pub government: Option<bgs::Government>,
     pub have_market: bool,
@@ -39,7 +39,7 @@ impl RootEntry for Station{}
 
 // Filed Type
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum OtherService {
     #[serde(rename = "Black Market")]
@@ -64,18 +64,18 @@ pub enum OtherService {
     UniversalCartographics,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct StationBody {
     pub id: u64,
     // Attributes
-    pub latitude: Option<f64>,
-    pub longitude: Option<f64>,
+    pub latitude: Option<f32>,
+    pub longitude: Option<f32>,
     pub name: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum StationType {
     // Orbital Large
@@ -98,7 +98,7 @@ pub enum StationType {
     PlanetaryOutpost,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct UpdateTime {

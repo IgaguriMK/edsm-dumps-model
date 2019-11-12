@@ -8,7 +8,7 @@ use super::RootEntry;
 
 // Main Type
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
 pub enum Body {
@@ -42,38 +42,38 @@ impl RootEntry for Body {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Planet {
     pub id: u64,
     // Attributes
-    pub arg_of_periapsis: Option<f64>,
+    pub arg_of_periapsis: Option<f32>,
     pub atmosphere_composition: Option<AtmosphereComposition>,
     pub atmosphere_type: Option<String>,
-    pub axial_tilt: Option<f64>,
+    pub axial_tilt: Option<f32>,
     pub belts: Option<Vec<Belt>>,
     pub body_id: Option<u64>,
     pub distance_to_arrival: u64,
-    pub earth_masses: f64,
-    pub gravity: Option<f64>,
+    pub earth_masses: f32,
+    pub gravity: Option<f32>,
     pub id64: Option<u64>,
     pub is_landable: bool,
     pub materials: Option<Materials>,
     pub name: String,
-    pub orbital_eccentricity: Option<f64>,
-    pub orbital_inclination: Option<f64>,
-    pub orbital_period: Option<f64>,
+    pub orbital_eccentricity: Option<f32>,
+    pub orbital_inclination: Option<f32>,
+    pub orbital_period: Option<f32>,
     pub parents: Option<Vec<Parent>>,
-    pub radius: f64,
+    pub radius: f32,
     pub reserve_level: Option<ReserveLevel>,
     pub rings: Option<Vec<Ring>>,
-    pub rotational_period: Option<f64>,
+    pub rotational_period: Option<f32>,
     pub rotational_period_tidally_locked: bool,
-    pub semi_major_axis: Option<f64>,
+    pub semi_major_axis: Option<f32>,
     pub solid_composition: Option<SolidComposition>,
     pub sub_type: PlanetSubType,
-    pub surface_pressure: Option<f64>,
+    pub surface_pressure: Option<f32>,
     pub surface_temperature: u64,
     pub system_id: Option<u64>,
     pub system_id64: Option<u64>,
@@ -85,16 +85,16 @@ pub struct Planet {
     pub update_time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Star {
     pub id: u64,
     // Attributes
-    pub absolute_magnitude: Option<f64>,
+    pub absolute_magnitude: Option<f32>,
     pub age: u64,
-    pub arg_of_periapsis: Option<f64>,
-    pub axial_tilt: Option<f64>,
+    pub arg_of_periapsis: Option<f32>,
+    pub axial_tilt: Option<f32>,
     pub belts: Option<Vec<Belt>>,
     pub body_id: Option<u64>,
     pub distance_to_arrival: u64,
@@ -103,17 +103,17 @@ pub struct Star {
     pub is_scoopable: bool,
     pub luminosity: Option<Luminosity>,
     pub name: String,
-    pub orbital_eccentricity: Option<f64>,
-    pub orbital_inclination: Option<f64>,
-    pub orbital_period: Option<f64>,
+    pub orbital_eccentricity: Option<f32>,
+    pub orbital_inclination: Option<f32>,
+    pub orbital_period: Option<f32>,
     pub parents: Option<Vec<Parent>>,
     pub reserve_level: Option<ReserveLevel>,
     pub rings: Option<Vec<Ring>>,
-    pub rotational_period: Option<f64>,
+    pub rotational_period: Option<f32>,
     pub rotational_period_tidally_locked: bool,
-    pub semi_major_axis: Option<f64>,
-    pub solar_masses: f64,
-    pub solar_radius: f64,
+    pub semi_major_axis: Option<f32>,
+    pub solar_masses: f32,
+    pub solar_radius: f32,
     pub spectral_class: Option<String>,
     pub sub_type: StarSubType,
     pub surface_temperature: u64,
@@ -125,20 +125,16 @@ pub struct Star {
     pub update_time: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-#[serde(deny_unknown_fields)]
 pub struct Unknown {
     pub id: u64,
     // Attributes
-    pub distance_to_arrival: u64,
     pub id64: Option<u64>,
     pub name: String,
     pub system_id: Option<u64>,
     pub system_id64: Option<u64>,
     pub system_name: Option<String>,
-    pub terraforming_state: Option<TerraformingState>,
-    pub volcanism_type: Option<VolcanismType>,
     // Metadata
     #[serde(with = "date_format")]
     pub update_time: DateTime<Utc>,
@@ -146,7 +142,7 @@ pub struct Unknown {
 
 // Field Type
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum AsteroidType {
     Icy,
@@ -159,97 +155,97 @@ pub enum AsteroidType {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct AtmosphereComposition {
-    pub ammonia: Option<f64>,
-    pub argon: Option<f64>,
+    pub ammonia: Option<f32>,
+    pub argon: Option<f32>,
     #[serde(rename = "Carbon dioxide")]
-    pub carbon_dioxide: Option<f64>,
-    pub helium: Option<f64>,
-    pub hydrogen: Option<f64>,
-    pub iron: Option<f64>,
-    pub methane: Option<f64>,
-    pub neon: Option<f64>,
-    pub nitrogen: Option<f64>,
-    pub oxygen: Option<f64>,
-    pub silicates: Option<f64>,
+    pub carbon_dioxide: Option<f32>,
+    pub helium: Option<f32>,
+    pub hydrogen: Option<f32>,
+    pub iron: Option<f32>,
+    pub methane: Option<f32>,
+    pub neon: Option<f32>,
+    pub nitrogen: Option<f32>,
+    pub oxygen: Option<f32>,
+    pub silicates: Option<f32>,
     #[serde(rename = "Sulphur dioxide")]
-    pub sulphur_dioxide: Option<f64>,
-    pub water: Option<f64>,
+    pub sulphur_dioxide: Option<f32>,
+    pub water: Option<f32>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Belt {
-    pub inner_radius: f64,
-    pub mass: f64,
+    pub inner_radius: f32,
+    pub mass: f32,
     pub name: String,
-    pub outer_radius: f64,
+    pub outer_radius: f32,
     #[serde(rename = "type")]
     pub typ: Option<AsteroidType>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum Luminosity {
-    O,
-    I,
-    Ia,
-    Ia0,
-    Iab,
-    Ib,
-    II,
-    IIa,
-    IIab,
-    IIb,
-    III,
-    IIIa,
-    IIIab,
-    IIIb,
-    IV,
-    IVa,
-    IVab,
-    IVb,
-    V,
-    Va,
-    Vab,
-    Vb,
-    Vz,
-    VI,
     VII,
+    VI,
+    Vz,
+    Vb,
+    Vab,
+    Va,
+    V,
+    IVb,
+    IVab,
+    IVa,
+    IV,
+    IIIb,
+    IIIab,
+    IIIa,
+    III,
+    IIb,
+    IIab,
+    IIa,
+    II,
+    Ib,
+    Iab,
+    Ia0,
+    Ia,
+    I,
+    O,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 #[serde(deny_unknown_fields)]
 pub struct Materials {
-    pub antimony: Option<f64>,
-    pub arsenic: Option<f64>,
-    pub cadmium: Option<f64>,
-    pub carbon: Option<f64>,
-    pub chromium: Option<f64>,
-    pub germanium: Option<f64>,
-    pub iron: Option<f64>,
-    pub manganese: Option<f64>,
-    pub mercury: Option<f64>,
-    pub molybdenum: Option<f64>,
-    pub nickel: Option<f64>,
-    pub niobium: Option<f64>,
-    pub phosphorus: Option<f64>,
-    pub polonium: Option<f64>,
-    pub ruthenium: Option<f64>,
-    pub selenium: Option<f64>,
-    pub sulphur: Option<f64>,
-    pub technetium: Option<f64>,
-    pub tellurium: Option<f64>,
-    pub tin: Option<f64>,
-    pub tungsten: Option<f64>,
-    pub vanadium: Option<f64>,
-    pub yttrium: Option<f64>,
-    pub zinc: Option<f64>,
-    pub zirconium: Option<f64>,
+    pub antimony: Option<f32>,
+    pub arsenic: Option<f32>,
+    pub cadmium: Option<f32>,
+    pub carbon: Option<f32>,
+    pub chromium: Option<f32>,
+    pub germanium: Option<f32>,
+    pub iron: Option<f32>,
+    pub manganese: Option<f32>,
+    pub mercury: Option<f32>,
+    pub molybdenum: Option<f32>,
+    pub nickel: Option<f32>,
+    pub niobium: Option<f32>,
+    pub phosphorus: Option<f32>,
+    pub polonium: Option<f32>,
+    pub ruthenium: Option<f32>,
+    pub selenium: Option<f32>,
+    pub sulphur: Option<f32>,
+    pub technetium: Option<f32>,
+    pub tellurium: Option<f32>,
+    pub tin: Option<f32>,
+    pub tungsten: Option<f32>,
+    pub vanadium: Option<f32>,
+    pub yttrium: Option<f32>,
+    pub zinc: Option<f32>,
+    pub zirconium: Option<f32>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum Parent {
     Null(u64),
@@ -257,7 +253,7 @@ pub enum Parent {
     Star(u64),
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
     // gas ginat
@@ -301,12 +297,12 @@ pub enum PlanetSubType {
     WaterWorld,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum ReserveLevel {
-    Common,
     Depleted,
     Low,
+    Common,
     Major,
     Pristine,
 }
@@ -315,10 +311,10 @@ pub enum ReserveLevel {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Ring {
-    pub inner_radius: f64,
-    pub mass: f64,
+    pub inner_radius: f32,
+    pub mass: f32,
     pub name: String,
-    pub outer_radius: f64,
+    pub outer_radius: f32,
     #[serde(rename = "type")]
     pub typ: Option<AsteroidType>,
 }
@@ -328,14 +324,14 @@ pub struct Ring {
 #[serde(deny_unknown_fields)]
 pub struct SolidComposition {
     #[serde(default)]
-    pub ice: f64,
+    pub ice: f32,
     #[serde(default)]
-    pub metal: f64,
+    pub metal: f32,
     #[serde(default)]
-    pub rock: f64,
+    pub rock: f32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
     // Main sequence & giants (scoopable)
@@ -433,7 +429,7 @@ pub enum StarSubType {
     SupermassiveBlackHole,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum TerraformingState {
     #[serde(rename = "Candidate for terraforming")]
@@ -444,7 +440,7 @@ pub enum TerraformingState {
     Terraforming,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum VolcanismType {
     #[serde(rename = "Ammonia Magma")]
