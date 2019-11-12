@@ -2,6 +2,42 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::dec::{date_format, date_format_opt};
+use super::bgs;
+use super::RootEntry;
+
+// Main Type
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Station {
+    pub id: u64,
+    // Attributes
+    pub allegiance: Option<bgs::Allegiance>,
+    pub body: Option<StationBody>,
+    pub controlling_faction: Option<bgs::ControllingFaction>,
+    pub distance_to_arrival: Option<f64>,
+    pub economy: Option<bgs::Economy>,
+    pub government: Option<bgs::Government>,
+    pub have_market: bool,
+    pub have_outfitting: bool,
+    pub have_shipyard: bool,
+    pub market_id: Option<u64>,
+    pub name: String,
+    pub other_services: Vec<OtherService>,
+    pub second_economy: Option<bgs::Economy>,
+    pub system_id: u64,
+    pub system_id64: u64,
+    pub system_name: String,
+    #[serde(rename = "type")]
+    pub typ: StationType,
+    // Metadata
+    pub update_time: UpdateTime,
+}
+
+impl RootEntry for Station{}
+
+// Filed Type
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

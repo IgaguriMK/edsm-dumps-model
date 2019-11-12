@@ -13,6 +13,7 @@ use edsm_dumps_model::config::Config;
 use edsm_dumps_model::model::body::Body;
 use edsm_dumps_model::model::system::{SystemWithCoordinates, SystemWithoutCoordinates};
 use edsm_dumps_model::model::system_populated::SystemPopulated;
+use edsm_dumps_model::model::station::Station;
 use edsm_dumps_model::model::RootEntry;
 
 fn main() {
@@ -39,6 +40,7 @@ fn w_main() -> Result<(), Fail> {
     let mut checker = Checker::new(dumps_dir.as_ref(), matches.value_of("target"));
 
     checker.check_parse::<Body>("bodies.json")?;
+    checker.check_parse::<Station>("stations.json")?;
     checker.check_parse::<SystemPopulated>("systemsPopulated.json")?;
     checker.check_parse::<SystemWithCoordinates>("systemsWithCoordinates.json")?;
     checker.check_parse::<SystemWithoutCoordinates>("systemsWithoutCoordinates.json")?;
