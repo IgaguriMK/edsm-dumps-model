@@ -1,3 +1,5 @@
+pub mod parallel;
+
 use std::io::BufRead;
 
 use serde_json::from_str;
