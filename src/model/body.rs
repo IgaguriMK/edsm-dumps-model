@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::fmt;
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -253,7 +254,7 @@ pub enum Parent {
     Star(u64),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
     // gas ginat
@@ -292,9 +293,37 @@ pub enum PlanetSubType {
     RockyIceWorld,
     #[serde(rename = "Rocky body")]
     RockyBody,
-
     #[serde(rename = "Water world")]
     WaterWorld,
+}
+
+impl fmt::Display for PlanetSubType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = match self {
+            // gas ginat
+            PlanetSubType::ClassIGasGiant => "Class I gas giant",
+            PlanetSubType::ClassIiGasGiant => "Class II gas giant",
+            PlanetSubType::ClassIiiGasGiant => "Class III gas giant",
+            PlanetSubType::ClassIvGasGiant => "Class IV gas giant",
+            PlanetSubType::ClassVGasGiant => "Class V gas giant",
+            PlanetSubType::GasGiantWithAmmoniaBasedLife => "Gas giant with ammonia-based life",
+            PlanetSubType::GasGiantWithWaterBasedLife => "Gas giant with water-based life",
+            PlanetSubType::HeliumGasGiant => "Helium gas giant",
+            PlanetSubType::HeliumRichGasGiant => "Helium-rich gas giant",
+            PlanetSubType::WaterGiant => "Water giant",
+            // terrestrial planet
+            PlanetSubType::AmmoniaWorld => "Ammonia world",
+            PlanetSubType::EarthLikeWorld => "Earth-like world",
+            PlanetSubType::HighMetalContentWorld => "High metal content world",
+            PlanetSubType::IcyBody => "Icy body",
+            PlanetSubType::MetalRichBody => "Metal-rich body",
+            PlanetSubType::RockyIceWorld => "Rocky Ice world",
+            PlanetSubType::RockyBody => "Rocky body",
+            PlanetSubType::WaterWorld => "Water world",
+        };
+
+        write!(f, "{}", s)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -331,7 +360,7 @@ pub struct SolidComposition {
     pub rock: f32,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
     // Main sequence & giants (scoopable)
@@ -379,9 +408,9 @@ pub enum StarSubType {
     #[serde(rename = "C Star")]
     CStar,
     #[serde(rename = "CJ Star")]
-    CjStar,
+    CJStar,
     #[serde(rename = "CN Star")]
-    CnStar,
+    CNStar,
     #[serde(rename = "MS-type Star")]
     MSTypeStar,
     #[serde(rename = "S-type Star")]
@@ -394,32 +423,32 @@ pub enum StarSubType {
     #[serde(rename = "Wolf-Rayet N Star")]
     WolfRayetNStar,
     #[serde(rename = "Wolf-Rayet NC Star")]
-    WolfRayetNcStar,
+    WolfRayetNCStar,
     #[serde(rename = "Wolf-Rayet O Star")]
     WolfRayetOStar,
     // White dwarf
     #[serde(rename = "White Dwarf (D) Star")]
     WhiteDwarfDStar,
     #[serde(rename = "White Dwarf (DA) Star")]
-    WhiteDwarfDaStar,
+    WhiteDwarfDAStar,
     #[serde(rename = "White Dwarf (DAB) Star")]
-    WhiteDwarfDabStar,
+    WhiteDwarfDABStar,
     #[serde(rename = "White Dwarf (DAV) Star")]
-    WhiteDwarfDavStar,
+    WhiteDwarfDAVStar,
     #[serde(rename = "White Dwarf (DAZ) Star")]
-    WhiteDwarfDazStar,
+    WhiteDwarfDAZStar,
     #[serde(rename = "White Dwarf (DB) Star")]
-    WhiteDwarfDbStar,
+    WhiteDwarfDBStar,
     #[serde(rename = "White Dwarf (DBV) Star")]
-    WhiteDwarfDbvStar,
+    WhiteDwarfDBVStar,
     #[serde(rename = "White Dwarf (DBZ) Star")]
-    WhiteDwarfDbzStar,
+    WhiteDwarfDBZStar,
     #[serde(rename = "White Dwarf (DC) Star")]
-    WhiteDwarfDcStar,
+    WhiteDwarfDCStar,
     #[serde(rename = "White Dwarf (DCV) Star")]
-    WhiteDwarfDcvStar,
+    WhiteDwarfDCVStar,
     #[serde(rename = "White Dwarf (DQ) Star")]
-    WhiteDwarfDqStar,
+    WhiteDwarfDQStar,
     // Non sequence
     #[serde(rename = "Neutron Star")]
     NeutronStar,
@@ -427,6 +456,58 @@ pub enum StarSubType {
     BlackHole,
     #[serde(rename = "Supermassive Black Hole")]
     SupermassiveBlackHole,
+}
+
+impl fmt::Display for StarSubType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = match self {
+            StarSubType::OBlueWhiteStar => "O (Blue-White) Star",
+            StarSubType::BBlueWhiteSuperGiantStar => "B (Blue-White super giant) Star",
+            StarSubType::BBlueWhiteStar => "B (Blue-White) Star",
+            StarSubType::ABlueWhiteSuperGiantStar => "A (Blue-White super giant) Star",
+            StarSubType::ABlueWhiteStar => "A (Blue-White) Star",
+            StarSubType::FWhiteSuperGiantStar => "F (White super giant) Star",
+            StarSubType::FWhiteStar => "F (White) Star",
+            StarSubType::GWhiteYellowSuperGiantStar => "G (White-Yellow super giant) Star",
+            StarSubType::GWhiteYellowStar => "G (White-Yellow) Star",
+            StarSubType::KYellowOrangeGiantStar => "K (Yellow-Orange giant) Star",
+            StarSubType::KYellowOrangeStar => "K (Yellow-Orange) Star",
+            StarSubType::MRedDwarfStar => "M (Red dwarf) Star",
+            StarSubType::MRedGiantStar => "M (Red giant) Star",
+            StarSubType::MRedSuperGiantStar => "M (Red super giant) Star",
+            StarSubType::LBrownDwarfStar => "L (Brown dwarf) Star",
+            StarSubType::TBrownDwarfStar => "T (Brown dwarf) Star",
+            StarSubType::YBrownDwarfStar => "Y (Brown dwarf) Star",
+            StarSubType::HerbigAeBeStar => "Herbig Ae/Be Star",
+            StarSubType::TTauriStar => "T Tauri Star",
+            StarSubType::CStar => "C Star",
+            StarSubType::CJStar => "CJ Star",
+            StarSubType::CNStar => "CN Star",
+            StarSubType::MSTypeStar => "MS-type Star",
+            StarSubType::STypeStar => "S-type Star",
+            StarSubType::WolfRayetStar => "Wolf-Rayet Star",
+            StarSubType::WolfRayetCStar => "Wolf-Rayet C Star",
+            StarSubType::WolfRayetNStar => "Wolf-Rayet N Star",
+            StarSubType::WolfRayetNCStar => "Wolf-Rayet NC Star",
+            StarSubType::WolfRayetOStar => "Wolf-Rayet O Star",
+            StarSubType::WhiteDwarfDStar => "White Dwarf (D) Star",
+            StarSubType::WhiteDwarfDAStar => "White Dwarf (DA) Star",
+            StarSubType::WhiteDwarfDABStar => "White Dwarf (DAB) Star",
+            StarSubType::WhiteDwarfDAVStar => "White Dwarf (DAV) Star",
+            StarSubType::WhiteDwarfDAZStar => "White Dwarf (DAZ) Star",
+            StarSubType::WhiteDwarfDBStar => "White Dwarf (DB) Star",
+            StarSubType::WhiteDwarfDBVStar => "White Dwarf (DBV) Star",
+            StarSubType::WhiteDwarfDBZStar => "White Dwarf (DBZ) Star",
+            StarSubType::WhiteDwarfDCStar => "White Dwarf (DC) Star",
+            StarSubType::WhiteDwarfDCVStar => "White Dwarf (DCV) Star",
+            StarSubType::WhiteDwarfDQStar => "White Dwarf (DQ) Star",
+            StarSubType::NeutronStar => "Neutron Star",
+            StarSubType::BlackHole => "Black Hole",
+            StarSubType::SupermassiveBlackHole => "Supermassive Black Hole",
+        };
+
+        write!(f, "{}", s)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
