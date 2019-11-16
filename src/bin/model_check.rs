@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{stderr, BufReader, Write};
 use std::path::{Path, PathBuf};
-use std::thread::{spawn, sleep};
+use std::thread::{sleep, spawn};
 use std::time::Duration;
 
 use clap::{App, Arg};
@@ -11,11 +11,11 @@ use tiny_fail::{ErrorMessageExt, Fail};
 use edsm_dumps_model::array_decoder::{ArrayDecoder, Progress};
 use edsm_dumps_model::config::Config;
 use edsm_dumps_model::model::body::Body;
+use edsm_dumps_model::model::powerplay::PowerPlay;
+use edsm_dumps_model::model::station::Station;
 use edsm_dumps_model::model::system::{SystemWithCoordinates, SystemWithoutCoordinates};
 use edsm_dumps_model::model::system_populated::SystemPopulated;
-use edsm_dumps_model::model::station::Station;
 use edsm_dumps_model::model::RootEntry;
-use edsm_dumps_model::model::powerplay::PowerPlay;
 
 fn main() {
     if let Err(fail) = w_main() {

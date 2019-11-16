@@ -1,9 +1,9 @@
 pub mod bgs;
 pub mod body;
+pub mod powerplay;
 pub mod station;
 pub mod system;
 pub mod system_populated;
-pub mod powerplay;
 
 mod dec;
 

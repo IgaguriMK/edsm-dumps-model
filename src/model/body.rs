@@ -19,6 +19,42 @@ pub enum Body {
     Unknown(Unknown),
 }
 
+macro_rules! body_common_field {
+    ($f:ident, $ty:ty ) => {
+        pub fn $f(&self) -> $ty {
+            match self {
+                Body::Planet(x) => x.$f,
+                Body::Star(x) => x.$f,
+                Body::Unknown(x) => x.$f,
+            }
+        }
+    };
+}
+
+impl Body {
+    body_common_field!(id, u64);
+    body_common_field!(id64, Option<u64>);
+    body_common_field!(system_id, Option<u64>);
+    body_common_field!(system_id64, Option<u64>);
+    body_common_field!(update_time, DateTime<Utc>);
+
+    pub fn name(&self) -> &str {
+        match self {
+            Body::Planet(x) => &x.name,
+            Body::Star(x) => &x.name,
+            Body::Unknown(x) => &x.name,
+        }
+    }
+
+    pub fn system_name(&self) -> Option<&str> {
+        match self {
+            Body::Planet(x) => x.system_name.as_ref().map(|s| s.as_str()),
+            Body::Star(x) => x.system_name.as_ref().map(|s| s.as_str()),
+            Body::Unknown(x) => x.system_name.as_ref().map(|s| s.as_str()),
+        }
+    }
+}
+
 impl RootEntry for Body {
     fn pre_filter(s: &str) -> Cow<'_, str> {
         let null_pos = s.find(r#""type":null"#);

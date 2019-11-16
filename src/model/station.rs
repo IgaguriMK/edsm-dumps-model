@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use super::dec::{date_format, date_format_opt};
 use super::bgs;
+use super::dec::{date_format, date_format_opt};
 use super::RootEntry;
 
 // Main Type
@@ -35,7 +35,7 @@ pub struct Station {
     pub update_time: UpdateTime,
 }
 
-impl RootEntry for Station{}
+impl RootEntry for Station {}
 
 // Filed Type
 
