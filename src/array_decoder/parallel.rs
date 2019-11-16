@@ -105,7 +105,15 @@ fn spawn_splitter(
                 progress.inc(2);
             }
 
-            while bytes.len() > MAX_INPUT_CHUNK_SIZE {
+            let reset_eta_at = (4 * 1024 * 1024 * 1024) / INPUT_CHUNK_SIZE;
+            for i in 0.. {
+                if bytes.len() < MAX_INPUT_CHUNK_SIZE {
+                    break;
+                }
+                if i % reset_eta_at == 0 {
+                    progress.reset_eta();
+                }
+
                 let pos = find_newline(bytes, INPUT_CHUNK_SIZE);
                 if pos + 1 < bytes.len() {
                     let (bs, bss) = bytes.split_at(pos + 1);

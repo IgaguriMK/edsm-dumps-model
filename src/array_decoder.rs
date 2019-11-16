@@ -90,6 +90,7 @@ impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
 
 pub trait Progress {
     fn inc(&mut self, delta: usize);
+    fn reset_eta(&mut self) {}
 }
 
 pub struct NopProgress;
