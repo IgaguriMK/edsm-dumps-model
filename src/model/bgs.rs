@@ -1,4 +1,8 @@
 use serde::{Deserialize, Serialize};
+use strum_macros::EnumIter;
+
+use super::util::DisplayViaSerde;
+use crate::display_via_serde;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -7,7 +11,7 @@ pub struct ActiveState {
     pub state: State,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Allegiance {
     Alliance,
@@ -17,6 +21,8 @@ pub enum Allegiance {
     #[serde(rename = "Pilots Federation")]
     PilotsFederation,
 }
+
+display_via_serde!(Allegiance);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -30,7 +36,7 @@ pub struct ControllingFaction {
     pub name: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Economy {
     Agriculture,
@@ -50,7 +56,9 @@ pub enum Economy {
     Tourism,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+display_via_serde!(Economy);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Government {
     Anarchy,
@@ -70,7 +78,9 @@ pub enum Government {
     WorkshopEngineer,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+display_via_serde!(Government);
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Happiness {
     Despondent,
@@ -79,6 +89,8 @@ pub enum Happiness {
     Happy,
     Elated,
 }
+
+display_via_serde!(Happiness);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -96,7 +108,7 @@ pub struct RecoveringState {
     pub trend: u8,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Security {
     Anarchy,
@@ -105,7 +117,9 @@ pub enum Security {
     High,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+display_via_serde!(Security);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum State {
     Blight,
@@ -129,3 +143,5 @@ pub enum State {
     Retreat,
     War,
 }
+
+display_via_serde!(State);

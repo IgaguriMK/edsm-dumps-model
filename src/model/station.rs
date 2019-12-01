@@ -1,9 +1,13 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use strum_macros::EnumIter;
 
 use super::bgs;
 use super::dec::{date_format, date_format_opt};
 use super::RootEntry;
+
+use super::util::DisplayViaSerde;
+use crate::display_via_serde;
 
 // Main Type
 
@@ -39,7 +43,7 @@ impl RootEntry for Station {}
 
 // Filed Type
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum OtherService {
     #[serde(rename = "Black Market")]
@@ -64,6 +68,8 @@ pub enum OtherService {
     UniversalCartographics,
 }
 
+display_via_serde!(OtherService);
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -75,7 +81,7 @@ pub struct StationBody {
     pub name: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum StationType {
     // Orbital Large
@@ -97,6 +103,8 @@ pub enum StationType {
     #[serde(rename = "Planetary Outpost")]
     PlanetaryOutpost,
 }
+
+display_via_serde!(StationType);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

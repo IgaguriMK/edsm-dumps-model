@@ -1,10 +1,14 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use strum_macros::EnumIter;
 
 use super::bgs;
 use super::dec::date_format;
 use super::system;
 use super::RootEntry;
+
+use super::util::DisplayViaSerde;
+use crate::display_via_serde;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -29,7 +33,7 @@ impl RootEntry for PowerPlay {}
 
 // Field Type
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Power {
     #[serde(rename = "A. Lavigny-Duval")]
@@ -56,7 +60,9 @@ pub enum Power {
     ZeminaTorval,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+display_via_serde!(Power);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum PowerState {
     Contested,
@@ -67,3 +73,5 @@ pub enum PowerState {
     Prepared,
     Turmoil,
 }
+
+display_via_serde!(PowerState);

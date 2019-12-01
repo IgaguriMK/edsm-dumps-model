@@ -173,7 +173,10 @@ fn decoder<D: 'static + Send + RootEntry>(
                 break;
             }
 
-            let s = line.trim_start_matches("    ").trim_end_matches("\n").trim_end_matches(",");
+            let s = line
+                .trim_start_matches("    ")
+                .trim_end_matches("\n")
+                .trim_end_matches(",");
             if s.is_empty() {
                 continue;
             }

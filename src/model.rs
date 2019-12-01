@@ -5,6 +5,8 @@ pub mod station;
 pub mod system;
 pub mod system_populated;
 
+#[macro_use]
+mod util;
 mod dec;
 
 use std::borrow::Cow;
