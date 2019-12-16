@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::fmt;
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -297,7 +298,9 @@ pub enum Parent {
     Star(u64),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
     // gas ginat
@@ -376,6 +379,51 @@ pub struct SolidComposition {
     pub metal: f32,
     #[serde(default)]
     pub rock: f32,
+}
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
+pub enum StarClass {
+    OTypeStars,
+    BTypeStars,
+    ATypeStars,
+    FTypeStars,
+    GTypeStars,
+    KTypeStars,
+    MTypeStars,
+    LTypeStars,
+    TTypeStars,
+    YTypeStars,
+    ProtoStars,
+    CarbonStars,
+    WolfRayetStars,
+    WhiteDwarfStars,
+    NonSequenceStars,
+}
+
+impl fmt::Display for StarClass {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = match self {
+            StarClass::OTypeStars => "O-Type Stars",
+            StarClass::BTypeStars => "B-Type Stars",
+            StarClass::ATypeStars => "A-Type Stars",
+            StarClass::FTypeStars => "F-Type Stars",
+            StarClass::GTypeStars => "G-Type Stars",
+            StarClass::KTypeStars => "K-Type Stars",
+            StarClass::MTypeStars => "M-Type Stars",
+            StarClass::LTypeStars => "L-Type Stars",
+            StarClass::TTypeStars => "T-Type Stars",
+            StarClass::YTypeStars => "Y-Type Stars",
+            StarClass::ProtoStars => "Proto Stars",
+            StarClass::CarbonStars => "Carbon Stars",
+            StarClass::WolfRayetStars => "Wolf-Rayet Stars",
+            StarClass::WhiteDwarfStars => "White Dwarf Stars",
+            StarClass::NonSequenceStars => "Non Sequence Stars",
+        };
+
+        write!(f, "{}", s)
+    }
 }
 
 #[derive(
@@ -479,6 +527,56 @@ pub enum StarSubType {
 }
 
 display_via_serde!(StarSubType);
+
+impl StarSubType {
+    pub fn filter_star_class(self) -> StarClass {
+        match self {
+            StarSubType::OBlueWhiteStar => StarClass::OTypeStars,
+            StarSubType::BBlueWhiteSuperGiantStar => StarClass::BTypeStars,
+            StarSubType::BBlueWhiteStar => StarClass::BTypeStars,
+            StarSubType::ABlueWhiteSuperGiantStar => StarClass::ATypeStars,
+            StarSubType::ABlueWhiteStar => StarClass::ATypeStars,
+            StarSubType::FWhiteSuperGiantStar => StarClass::FTypeStars,
+            StarSubType::FWhiteStar => StarClass::FTypeStars,
+            StarSubType::GWhiteYellowSuperGiantStar => StarClass::GTypeStars,
+            StarSubType::GWhiteYellowStar => StarClass::GTypeStars,
+            StarSubType::KYellowOrangeGiantStar => StarClass::KTypeStars,
+            StarSubType::KYellowOrangeStar => StarClass::KTypeStars,
+            StarSubType::MRedDwarfStar => StarClass::MTypeStars,
+            StarSubType::MRedGiantStar => StarClass::MTypeStars,
+            StarSubType::MRedSuperGiantStar => StarClass::MTypeStars,
+            StarSubType::LBrownDwarfStar => StarClass::LTypeStars,
+            StarSubType::TBrownDwarfStar => StarClass::TTypeStars,
+            StarSubType::YBrownDwarfStar => StarClass::YTypeStars,
+            StarSubType::HerbigAeBeStar => StarClass::ProtoStars,
+            StarSubType::TTauriStar => StarClass::ProtoStars,
+            StarSubType::CStar => StarClass::CarbonStars,
+            StarSubType::CJStar => StarClass::CarbonStars,
+            StarSubType::CNStar => StarClass::CarbonStars,
+            StarSubType::MSTypeStar => StarClass::CarbonStars,
+            StarSubType::STypeStar => StarClass::CarbonStars,
+            StarSubType::WolfRayetStar => StarClass::WolfRayetStars,
+            StarSubType::WolfRayetCStar => StarClass::WolfRayetStars,
+            StarSubType::WolfRayetNStar => StarClass::WolfRayetStars,
+            StarSubType::WolfRayetNCStar => StarClass::WolfRayetStars,
+            StarSubType::WolfRayetOStar => StarClass::WolfRayetStars,
+            StarSubType::WhiteDwarfDStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDAStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDABStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDAVStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDAZStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDBStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDBVStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDBZStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDCStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDCVStar => StarClass::WhiteDwarfStars,
+            StarSubType::WhiteDwarfDQStar => StarClass::WhiteDwarfStars,
+            StarSubType::NeutronStar => StarClass::NonSequenceStars,
+            StarSubType::BlackHole => StarClass::NonSequenceStars,
+            StarSubType::SupermassiveBlackHole => StarClass::NonSequenceStars,
+        }
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
