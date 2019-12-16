@@ -297,7 +297,7 @@ pub enum Parent {
     Star(u64),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
     // gas ginat
