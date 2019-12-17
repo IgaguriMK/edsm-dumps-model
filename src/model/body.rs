@@ -431,33 +431,35 @@ impl fmt::Display for StarClass {
 )]
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
-    // Main sequence & giants (scoopable)
+    // Main sequence
     #[serde(rename = "O (Blue-White) Star")]
     OBlueWhiteStar,
-    #[serde(rename = "B (Blue-White super giant) Star")]
-    BBlueWhiteSuperGiantStar,
     #[serde(rename = "B (Blue-White) Star")]
     BBlueWhiteStar,
-    #[serde(rename = "A (Blue-White super giant) Star")]
-    ABlueWhiteSuperGiantStar,
     #[serde(rename = "A (Blue-White) Star")]
     ABlueWhiteStar,
-    #[serde(rename = "F (White super giant) Star")]
-    FWhiteSuperGiantStar,
     #[serde(rename = "F (White) Star")]
     FWhiteStar,
-    #[serde(rename = "G (White-Yellow super giant) Star")]
-    GWhiteYellowSuperGiantStar,
     #[serde(rename = "G (White-Yellow) Star")]
     GWhiteYellowStar,
-    #[serde(rename = "K (Yellow-Orange giant) Star")]
-    KYellowOrangeGiantStar,
     #[serde(rename = "K (Yellow-Orange) Star")]
     KYellowOrangeStar,
     #[serde(rename = "M (Red dwarf) Star")]
     MRedDwarfStar,
+    // Giants
+    #[serde(rename = "K (Yellow-Orange giant) Star")]
+    KYellowOrangeGiantStar,
     #[serde(rename = "M (Red giant) Star")]
     MRedGiantStar,
+    // Supergiants
+    #[serde(rename = "B (Blue-White super giant) Star")]
+    BBlueWhiteSuperGiantStar,
+    #[serde(rename = "A (Blue-White super giant) Star")]
+    ABlueWhiteSuperGiantStar,
+    #[serde(rename = "F (White super giant) Star")]
+    FWhiteSuperGiantStar,
+    #[serde(rename = "G (White-Yellow super giant) Star")]
+    GWhiteYellowSuperGiantStar,
     #[serde(rename = "M (Red super giant) Star")]
     MRedSuperGiantStar,
     // Brown dwarf
