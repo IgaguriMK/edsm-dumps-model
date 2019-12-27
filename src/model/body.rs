@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::collections::BTreeMap;
 use std::fmt;
 
 use chrono::{DateTime, Utc};
@@ -79,6 +80,72 @@ impl RootEntry for Body {
             Cow::Owned(s.replacen(r#""type":null"#, r#""type":"null""#, 1))
         } else {
             Cow::Borrowed(s)
+        }
+    }
+}
+
+/// Surrogate type for some encodings.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum BodyS {
+    Planet(Planet),
+    Star(Star),
+    #[serde(rename = "null")]
+    Unknown(Unknown),
+}
+
+macro_rules! body_s_common_field {
+    ($f:ident, $ty:ty ) => {
+        pub fn $f(&self) -> $ty {
+            match self {
+                BodyS::Planet(x) => x.$f,
+                BodyS::Star(x) => x.$f,
+                BodyS::Unknown(x) => x.$f,
+            }
+        }
+    };
+}
+
+impl BodyS {
+    body_s_common_field!(id, u64);
+    body_s_common_field!(id64, Option<u64>);
+    body_s_common_field!(system_id, Option<u64>);
+    body_s_common_field!(system_id64, Option<u64>);
+    body_s_common_field!(update_time, DateTime<Utc>);
+
+    pub fn name(&self) -> &str {
+        match self {
+            BodyS::Planet(x) => &x.name,
+            BodyS::Star(x) => &x.name,
+            BodyS::Unknown(x) => &x.name,
+        }
+    }
+
+    pub fn system_name(&self) -> Option<&str> {
+        match self {
+            BodyS::Planet(x) => x.system_name.as_ref().map(|s| s.as_str()),
+            BodyS::Star(x) => x.system_name.as_ref().map(|s| s.as_str()),
+            BodyS::Unknown(x) => x.system_name.as_ref().map(|s| s.as_str()),
+        }
+    }
+}
+
+impl From<Body> for BodyS {
+    fn from(body: Body) -> BodyS {
+        match body {
+            Body::Planet(x) => BodyS::Planet(x),
+            Body::Star(x) => BodyS::Star(x),
+            Body::Unknown(x) => BodyS::Unknown(x),
+        }
+    }
+}
+
+impl From<BodyS> for Body {
+    fn from(body: BodyS) -> Body {
+        match body {
+            BodyS::Planet(x) => Body::Planet(x),
+            BodyS::Star(x) => Body::Star(x),
+            BodyS::Unknown(x) => Body::Unknown(x),
         }
     }
 }
@@ -183,40 +250,48 @@ pub struct Unknown {
 
 // Field Type
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 #[serde(deny_unknown_fields)]
 pub enum AsteroidType {
     Icy,
+    Rocky,
     #[serde(rename = "Metal Rich")]
     MetalRich,
     Metallic,
-    Rocky,
 }
 
 display_via_serde!(AsteroidType);
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct AtmosphereComposition {
-    pub ammonia: Option<f32>,
-    pub argon: Option<f32>,
+pub struct AtmosphereComposition(BTreeMap<AtmosphereCompositionKey, f32>);
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
+pub enum AtmosphereCompositionKey {
+    Ammonia,
+    Argon,
     #[serde(rename = "Carbon dioxide")]
-    pub carbon_dioxide: Option<f32>,
-    pub helium: Option<f32>,
-    pub hydrogen: Option<f32>,
-    pub iron: Option<f32>,
-    pub methane: Option<f32>,
-    pub neon: Option<f32>,
-    pub nitrogen: Option<f32>,
-    pub oxygen: Option<f32>,
-    pub silicates: Option<f32>,
+    CarbonDioxide,
+    Helium,
+    Hydrogen,
+    Iron,
+    Methane,
+    Neon,
+    Nitrogen,
+    Oxygen,
+    Silicates,
     #[serde(rename = "Sulphur dioxide")]
-    pub sulphur_dioxide: Option<f32>,
-    pub water: Option<f32>,
+    SulphurDioxide,
+    Water,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 pub enum AtmosphereType {
     /* normal */
     Ammonia,
@@ -396,7 +471,9 @@ pub struct Belt {
     pub typ: Option<AsteroidType>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Luminosity {
     VII,
@@ -431,32 +508,43 @@ display_via_serde!(Luminosity);
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 #[serde(deny_unknown_fields)]
-pub struct Materials {
-    pub antimony: Option<f32>,
-    pub arsenic: Option<f32>,
-    pub cadmium: Option<f32>,
-    pub carbon: Option<f32>,
-    pub chromium: Option<f32>,
-    pub germanium: Option<f32>,
-    pub iron: Option<f32>,
-    pub manganese: Option<f32>,
-    pub mercury: Option<f32>,
-    pub molybdenum: Option<f32>,
-    pub nickel: Option<f32>,
-    pub niobium: Option<f32>,
-    pub phosphorus: Option<f32>,
-    pub polonium: Option<f32>,
-    pub ruthenium: Option<f32>,
-    pub selenium: Option<f32>,
-    pub sulphur: Option<f32>,
-    pub technetium: Option<f32>,
-    pub tellurium: Option<f32>,
-    pub tin: Option<f32>,
-    pub tungsten: Option<f32>,
-    pub vanadium: Option<f32>,
-    pub yttrium: Option<f32>,
-    pub zinc: Option<f32>,
-    pub zirconium: Option<f32>,
+pub struct Materials(BTreeMap<MaterialsKey, f32>);
+
+impl Materials {
+    pub fn get(&self, key: MaterialsKey) -> Option<f32> {
+        self.0.get(&key).copied()
+    }
+}
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
+pub enum MaterialsKey {
+    Antimony,
+    Arsenic,
+    Cadmium,
+    Carbon,
+    Chromium,
+    Germanium,
+    Iron,
+    Manganese,
+    Mercury,
+    Molybdenum,
+    Nickel,
+    Niobium,
+    Phosphorus,
+    Polonium,
+    Ruthenium,
+    Selenium,
+    Sulphur,
+    Technetium,
+    Tellurium,
+    Tin,
+    Tungsten,
+    Vanadium,
+    Yttrium,
+    Zinc,
+    Zirconium,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -514,7 +602,9 @@ pub enum PlanetSubType {
 
 display_via_serde!(PlanetSubType);
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 #[serde(deny_unknown_fields)]
 pub enum ReserveLevel {
     Depleted,
@@ -894,7 +984,9 @@ impl StarSubType {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 #[serde(deny_unknown_fields)]
 pub enum TerraformingState {
     #[serde(rename = "Candidate for terraforming")]
@@ -907,7 +999,9 @@ pub enum TerraformingState {
 
 display_via_serde!(TerraformingState);
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
 #[serde(deny_unknown_fields)]
 pub enum VolcanismType {
     #[serde(rename = "Ammonia Magma")]

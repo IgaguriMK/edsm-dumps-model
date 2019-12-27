@@ -1,5 +1,4 @@
-use std::fs::File;
-use std::io::{stderr, BufReader, Write};
+use std::io::{stderr, Write};
 use std::path::{Path, PathBuf};
 use std::thread::{sleep, spawn};
 use std::time::Duration;
@@ -8,8 +7,8 @@ use clap::{App, Arg};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use tiny_fail::{ErrorMessageExt, Fail};
 
-use edsm_dumps_model::array_decoder::{ArrayDecoder, Progress};
 use edsm_dumps_model::array_decoder::parallel::ParallelDecoder;
+use edsm_dumps_model::array_decoder::Progress;
 use edsm_dumps_model::config::Config;
 use edsm_dumps_model::model::body::Body;
 use edsm_dumps_model::model::powerplay::PowerPlay;

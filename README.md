@@ -1,10 +1,10 @@
-edsm-dumps-downloader
+edsm-dumps-model
 =======
 
-Download and sync EDSM nightly dump files.
+Data models for [EDSM nightly dump files](https://www.edsm.net/nightly-dumps).
 
 ## License
 
-`edsm-dumps-downloader` is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
+`edsm-dumps-model` is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
 
 See [LICENSE-APACHE](LICENSE-APACHE) and [LICENSE-MIT](LICENSE-MIT).
