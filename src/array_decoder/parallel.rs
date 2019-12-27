@@ -149,7 +149,7 @@ fn spawn_decoder<D: 'static + Send + RootEntry>(
         .name(format!("decoder[{}]", idx))
         .spawn(move || {
             if let Err(e) = decoder(bytes_recv, chunk_send) {
-                eprintln!("{}", e);
+                eprintln!("\n\n{}\n\n", e);
                 panic!("decode failed")
             }
         })

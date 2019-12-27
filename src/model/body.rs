@@ -91,7 +91,7 @@ pub struct Planet {
     // Attributes
     pub arg_of_periapsis: Option<f32>,
     pub atmosphere_composition: Option<AtmosphereComposition>,
-    pub atmosphere_type: Option<String>,
+    pub atmosphere_type: Option<AtmosphereType>,
     pub axial_tilt: Option<f32>,
     pub belts: Option<Vec<Belt>>,
     pub body_id: Option<u64>,
@@ -155,7 +155,7 @@ pub struct Star {
     pub semi_major_axis: Option<f32>,
     pub solar_masses: f32,
     pub solar_radius: f32,
-    pub spectral_class: Option<String>,
+    pub spectral_class: Option<SpectralClass>,
     pub sub_type: StarSubType,
     pub surface_temperature: u64,
     pub system_id: Option<u64>,
@@ -213,6 +213,175 @@ pub struct AtmosphereComposition {
     #[serde(rename = "Sulphur dioxide")]
     pub sulphur_dioxide: Option<f32>,
     pub water: Option<f32>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub enum AtmosphereType {
+    /* normal */
+    Ammonia,
+    #[serde(rename = "Ammonia and Oxygen")]
+    AmmoniaAndOxygen,
+    #[serde(rename = "Ammonia-rich")]
+    AmmoniaRich,
+    Argon,
+    #[serde(rename = "Argon-rich")]
+    ArgonRich,
+    #[serde(rename = "Carbon dioxide")]
+    CarbonDioxide,
+    #[serde(rename = "Carbon dioxide-rich")]
+    CarbonDioxideRich,
+    Helium,
+    #[serde(rename = "Metallic vapour")]
+    MetallicVapour,
+    Methane,
+    #[serde(rename = "Methane-rich")]
+    MethaneRich,
+    Neon,
+    #[serde(rename = "Neon-rich")]
+    NeonRich,
+    Nitrogen,
+    #[serde(rename = "No atmosphere")]
+    NoAtmosphere,
+    Oxygen,
+    #[serde(rename = "Silicate vapour")]
+    SilicateVapour,
+    #[serde(rename = "Suitable for water-based life")]
+    SuitableForWaterBasedLife,
+    #[serde(rename = "Sulphur dioxide")]
+    SulphurDioxide,
+    Water,
+    #[serde(rename = "Water-rich")]
+    WaterRich,
+    /* Hot */
+    #[serde(rename = "Hot Argon")]
+    HotArgon,
+    #[serde(rename = "Hot Argon-rich")]
+    HotArgonRich,
+    #[serde(rename = "Hot Carbon dioxide")]
+    HotCarbonDioxide,
+    #[serde(rename = "Hot Carbon dioxide-rich")]
+    HotCarbonDioxideRich,
+    #[serde(rename = "Hot Metallic vapour")]
+    HotMetallicVapour,
+    #[serde(rename = "Hot Silicate vapour")]
+    HotSilicateVapour,
+    #[serde(rename = "Hot Sulphur dioxide")]
+    HotSulphurDioxide,
+    #[serde(rename = "Hot Water")]
+    HotWater,
+    #[serde(rename = "Hot Water-rich")]
+    HotWaterRich,
+    /* Hot thick */
+    #[serde(rename = "Hot thick Ammonia")]
+    HotThickAmmonia,
+    #[serde(rename = "Hot thick Ammonia-rich")]
+    HotThickAmmoniaRich,
+    #[serde(rename = "Hot thick Argon")]
+    HotThickArgon,
+    #[serde(rename = "Hot thick Argon-rich")]
+    HotThickArgonRich,
+    #[serde(rename = "Hot thick Carbon dioxide")]
+    HotThickCarbonDioxide,
+    #[serde(rename = "Hot thick Carbon dioxide-rich")]
+    HotThickCarbonDioxideRich,
+    #[serde(rename = "Hot thick Metallic vapour")]
+    HotThickMetallicVapour,
+    #[serde(rename = "Hot thick Methane")]
+    HotThickMethane,
+    #[serde(rename = "Hot thick Methane-rich")]
+    HotThickMethaneRich,
+    #[serde(rename = "Hot thick Nitrogen")]
+    HotThickNitrogen,
+    #[serde(rename = "Hot thick No atmosphere")]
+    HotThickNoAtmosphere,
+    #[serde(rename = "Hot thick Silicate vapour")]
+    HotThickSilicateVapour,
+    #[serde(rename = "Hot thick Sulphur dioxide")]
+    HotThickSulphurDioxide,
+    #[serde(rename = "Hot thick Water")]
+    HotThickWater,
+    #[serde(rename = "Hot thick Water-rich")]
+    HotThickWaterRich,
+    /* Hot thin */
+    #[serde(rename = "Hot thin Carbon dioxide")]
+    HotThinCarbonDioxide,
+    #[serde(rename = "Hot thin Metallic vapour")]
+    HotThinMetallicVapour,
+    #[serde(rename = "Hot thin Silicate vapour")]
+    HotThinSilicateVapour,
+    #[serde(rename = "Hot thin Sulphur dioxide")]
+    HotThinSulphurDioxide,
+    /* Thick */
+    #[serde(rename = "Thick Ammonia")]
+    ThickAmmonia,
+    #[serde(rename = "Thick Ammonia and Oxygen")]
+    ThickAmmoniaAndOxygen,
+    #[serde(rename = "Thick Ammonia-rich")]
+    ThickAmmoniaRich,
+    #[serde(rename = "Thick Argon")]
+    ThickArgon,
+    #[serde(rename = "Thick Argon-rich")]
+    ThickArgonRich,
+    #[serde(rename = "Thick Carbon dioxide")]
+    ThickCarbonDioxide,
+    #[serde(rename = "Thick Carbon dioxide-rich")]
+    ThickCarbonDioxideRich,
+    #[serde(rename = "Thick Helium")]
+    ThickHelium,
+    #[serde(rename = "Thick Methane")]
+    ThickMethane,
+    #[serde(rename = "Thick Methane-rich")]
+    ThickMethaneRich,
+    #[serde(rename = "Thick Nitrogen")]
+    ThickNitrogen,
+    #[serde(rename = "Thick No atmosphere")]
+    ThickNoAtmosphere,
+    #[serde(rename = "Thick Suitable for water-based life")]
+    ThickSuitableForWaterBasedLife,
+    #[serde(rename = "Thick Sulphur dioxide")]
+    ThickSulphurDioxide,
+    #[serde(rename = "Thick Water")]
+    ThickWater,
+    #[serde(rename = "Thick Water-rich")]
+    ThickWaterRich,
+    /* Thin */
+    #[serde(rename = "Thin Ammonia")]
+    ThinAmmonia,
+    #[serde(rename = "Thin Ammonia and Oxygen")]
+    ThinAmmoniaAndOxygen,
+    #[serde(rename = "Thin Ammonia-rich")]
+    ThinAmmoniaRich,
+    #[serde(rename = "Thin Argon")]
+    ThinArgon,
+    #[serde(rename = "Thin Argon-rich")]
+    ThinArgonRich,
+    #[serde(rename = "Thin Carbon dioxide")]
+    ThinCarbonDioxide,
+    #[serde(rename = "Thin Carbon dioxide-rich")]
+    ThinCarbonDioxideRich,
+    #[serde(rename = "Thin Helium")]
+    ThinHelium,
+    #[serde(rename = "Thin Methane")]
+    ThinMethane,
+    #[serde(rename = "Thin Methane-rich")]
+    ThinMethaneRich,
+    #[serde(rename = "Thin Neon")]
+    ThinNeon,
+    #[serde(rename = "Thin Neon-rich")]
+    ThinNeonRich,
+    #[serde(rename = "Thin Nitrogen")]
+    ThinNitrogen,
+    #[serde(rename = "Thin No atmosphere")]
+    ThinNoAtmosphere,
+    #[serde(rename = "Thin Oxygen")]
+    ThinOxygen,
+    #[serde(rename = "Thin Sulphur dioxide")]
+    ThinSulphurDioxide,
+    #[serde(rename = "Thin Water")]
+    ThinWater,
+    #[serde(rename = "Thin Water-rich")]
+    ThinWaterRich,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -424,6 +593,151 @@ impl fmt::Display for StarClass {
 
         write!(f, "{}", s)
     }
+}
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+)]
+#[serde(deny_unknown_fields)]
+pub enum SpectralClass {
+    O,
+    O0,
+    O1,
+    O2,
+    O3,
+    O4,
+    O5,
+    O6,
+    O7,
+    O8,
+    O9,
+    B,
+    B0,
+    B1,
+    B2,
+    B3,
+    B4,
+    B5,
+    B6,
+    B7,
+    B8,
+    B9,
+    A,
+    A0,
+    A1,
+    A2,
+    A3,
+    A4,
+    A5,
+    A6,
+    A7,
+    A8,
+    A9,
+    F,
+    F0,
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    G,
+    G0,
+    G1,
+    G2,
+    G3,
+    G4,
+    G5,
+    G6,
+    G7,
+    G8,
+    G9,
+    K,
+    K0,
+    K1,
+    K2,
+    K3,
+    K4,
+    K5,
+    K6,
+    K7,
+    K8,
+    K9,
+    M,
+    M0,
+    M1,
+    M2,
+    M3,
+    M4,
+    M5,
+    M6,
+    M7,
+    M8,
+    M9,
+    L,
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    L5,
+    L6,
+    L7,
+    L8,
+    L9,
+    T,
+    T0,
+    T1,
+    T2,
+    T3,
+    T4,
+    T5,
+    T6,
+    T7,
+    T8,
+    T9,
+    Y0,
+    Y1,
+    Y2,
+    Y3,
+    Y4,
+    Y5,
+    Y6,
+    Y7,
+    Y8,
+    AeBe0,
+    AeBe1,
+    AeBe2,
+    AeBe3,
+    AeBe4,
+    AeBe5,
+    AeBe6,
+    AeBe7,
+    AeBe8,
+    AeBe9,
+    #[serde(rename = "TTS0")]
+    Tts0,
+    #[serde(rename = "TTS1")]
+    Tts1,
+    #[serde(rename = "TTS2")]
+    Tts2,
+    #[serde(rename = "TTS3")]
+    Tts3,
+    #[serde(rename = "TTS4")]
+    Tts4,
+    #[serde(rename = "TTS5")]
+    Tts5,
+    #[serde(rename = "TTS6")]
+    Tts6,
+    #[serde(rename = "TTS7")]
+    Tts7,
+    #[serde(rename = "TTS8")]
+    Tts8,
+    #[serde(rename = "TTS9")]
+    Tts9,
 }
 
 #[derive(

@@ -9,6 +9,7 @@ use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use tiny_fail::{ErrorMessageExt, Fail};
 
 use edsm_dumps_model::array_decoder::{ArrayDecoder, Progress};
+use edsm_dumps_model::array_decoder::parallel::ParallelDecoder;
 use edsm_dumps_model::config::Config;
 use edsm_dumps_model::model::body::Body;
 use edsm_dumps_model::model::powerplay::PowerPlay;
@@ -67,7 +68,7 @@ impl<'a> Checker<'a> {
         }
     }
 
-    fn check_parse<D: RootEntry>(&mut self, file_name: &str) -> Result<(), Fail> {
+    fn check_parse<D: 'static + RootEntry + Send>(&mut self, file_name: &str) -> Result<(), Fail> {
         if let Some(check_target) = self.check_target {
             if check_target != file_name {
                 return Ok(());
@@ -103,19 +104,15 @@ impl<'a> Checker<'a> {
     }
 }
 
-fn check<D: RootEntry>(
+fn check<D: 'static + RootEntry + Send>(
     path: PathBuf,
     progress: CheckProgress,
     file_name: String,
 ) -> Result<(), Fail> {
-    let f = File::open(&path).err_msg(format!("failed open dump file '{:?}'", path))?;
-    let r = BufReader::new(f);
-    let dec = ArrayDecoder::new(r);
-
-    let mut dec = dec.set_progress(progress);
+    let mut dec = ParallelDecoder::<D>::start(path, progress)?;
 
     while let Some(_) = dec
-        .read_entry::<D>()
+        .read_entry()
         .err_msg(format!("While checking '{}'", file_name))?
     {}
 

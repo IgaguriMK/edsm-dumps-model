@@ -44,7 +44,7 @@ impl Default for Criteria {
 }
 
 fn default_enum_string_max() -> usize {
-    64
+    127
 }
 
 #[derive(Debug, Clone)]
