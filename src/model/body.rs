@@ -268,6 +268,12 @@ display_via_serde!(AsteroidType);
 #[serde(rename_all = "PascalCase")]
 pub struct AtmosphereComposition(BTreeMap<AtmosphereCompositionKey, f32>);
 
+impl AtmosphereComposition {
+    pub fn get(&self, key: AtmosphereCompositionKey) -> Option<f32> {
+        self.0.get(&key).copied()
+    }
+}
+
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
 )]
@@ -288,6 +294,8 @@ pub enum AtmosphereCompositionKey {
     SulphurDioxide,
     Water,
 }
+
+display_via_serde!(AtmosphereCompositionKey);
 
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
@@ -459,6 +467,8 @@ pub enum AtmosphereType {
     ThinWaterRich,
 }
 
+display_via_serde!(AtmosphereType);
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -546,6 +556,8 @@ pub enum MaterialsKey {
     Zinc,
     Zirconium,
 }
+
+display_via_serde!(MaterialsKey);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -829,6 +841,8 @@ pub enum SpectralClass {
     #[serde(rename = "TTS9")]
     Tts9,
 }
+
+display_via_serde!(SpectralClass);
 
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
