@@ -47,9 +47,12 @@ impl<D: 'static + Send + RootEntry> ParallelDecoder<D> {
         handles.push(h);
 
         for i in 0..worker_cnt {
-            let (s, r, h) = spawn_decoder::<D>(i);
-            sends.push(s);
-            recvs.push(r);
+            let (bytes_send, bytes_recv) = sync_channel(INPUT_CHANNEL_SUB_BUFFER);
+            let (chunk_send, chunk_recv) = sync_channel(OUTPUT_CHANNEL_SUB_BUFFER);
+
+            let h = spawn_decoder::<D>(i, bytes_recv, chunk_send);
+            sends.push(bytes_send);
+            recvs.push(chunk_recv);
             handles.push(h);
         }
 
@@ -137,15 +140,10 @@ fn spawn_splitter(
 
 fn spawn_decoder<D: 'static + Send + RootEntry>(
     idx: usize,
-) -> (
-    SyncSender<Option<&'static [u8]>>,
-    Receiver<Option<Vec<D>>>,
-    JoinHandle<()>,
-) {
-    let (bytes_send, bytes_recv) = sync_channel(INPUT_CHANNEL_SUB_BUFFER);
-    let (chunk_send, chunk_recv) = sync_channel(OUTPUT_CHANNEL_SUB_BUFFER);
-
-    let h = Builder::new()
+    bytes_recv: Receiver<Option<&'static [u8]>>,
+    chunk_send: SyncSender<Option<Vec<D>>>,
+) -> JoinHandle<()> {
+    Builder::new()
         .name(format!("decoder[{}]", idx))
         .spawn(move || {
             if let Err(e) = decoder(bytes_recv, chunk_send) {
@@ -153,9 +151,7 @@ fn spawn_decoder<D: 'static + Send + RootEntry>(
                 panic!("decode failed")
             }
         })
-        .unwrap();
-
-    (bytes_send, chunk_recv, h)
+        .unwrap()
 }
 
 fn decoder<D: 'static + Send + RootEntry>(
@@ -175,8 +171,8 @@ fn decoder<D: 'static + Send + RootEntry>(
 
             let s = line
                 .trim_start_matches("    ")
-                .trim_end_matches("\n")
-                .trim_end_matches(",");
+                .trim_end_matches('\n')
+                .trim_end_matches(',');
             if s.is_empty() {
                 continue;
             }
@@ -265,8 +261,8 @@ fn get_worker_cnt() -> usize {
 }
 
 fn find_newline(buf: &[u8], start: usize) -> usize {
-    for i in start..buf.len() {
-        if buf[i] == b'\n' {
+    for (i, b) in buf.iter().enumerate() {
+        if *b == b'\n' {
             return i;
         }
     }

@@ -17,6 +17,7 @@ use crate::display_via_serde;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
+#[allow(clippy::large_enum_variant)]
 pub enum Body {
     Planet(Planet),
     Star(Star),
@@ -63,7 +64,7 @@ impl Body {
 impl RootEntry for Body {
     fn pre_filter(s: &str) -> Cow<'_, str> {
         let null_pos = s.find(r#""type":null"#);
-        let first_compound = match (s.find(":{"), s.find("[")) {
+        let first_compound = match (s.find(":{"), s.find('[')) {
             (None, None) => None,
             (Some(x), None) => Some(x),
             (None, Some(y)) => Some(y),
@@ -87,6 +88,7 @@ impl RootEntry for Body {
 /// Surrogate type for some encodings.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
+#[allow(clippy::large_enum_variant)]
 pub enum BodyS {
     Planet(Planet),
     Star(Star),
