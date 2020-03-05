@@ -2,8 +2,8 @@ pub mod parallel;
 
 use std::io::BufRead;
 
+use anyhow::{Context, Error};
 use serde_json::from_str;
-use tiny_fail::{ErrorMessageExt, Fail};
 
 use crate::model::RootEntry;
 
@@ -38,12 +38,12 @@ impl<R: BufRead> ArrayDecoder<R> {
 }
 
 impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
-    fn read_line(&mut self) -> Result<Option<&str>, Fail> {
+    fn read_line(&mut self) -> Result<Option<&str>, Error> {
         self.buf.truncate(0);
         let n = self
             .r
             .read_line(&mut self.buf)
-            .err_msg(format!("failed read dump file at line {}", self.line))?;
+            .context(format!("failed read dump file at line {}", self.line))?;
         self.progress.inc(n);
         self.line += 1;
 
@@ -51,7 +51,7 @@ impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
             self.buf.truncate(0);
             self.r
                 .read_line(&mut self.buf)
-                .err_msg(format!("failed read dump file at line {}", self.line))?;
+                .context(format!("failed read dump file at line {}", self.line))?;
             self.line += 1;
         }
 
@@ -62,7 +62,7 @@ impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
         }
     }
 
-    pub fn read_entry<D: RootEntry>(&mut self) -> Result<Option<D>, Fail> {
+    pub fn read_entry<D: RootEntry>(&mut self) -> Result<Option<D>, Error> {
         let line_num = self.line;
 
         if let Some(line) = self.read_line()? {
@@ -76,7 +76,7 @@ impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
                 } else {
                     (line_after, "")
                 };
-                Fail::new(format!(
+                Error::msg(format!(
                     "at line {}: {}\n\twith line: {}\x1B[31m{}\x1B[m{}",
                     line_num, e, line_before, line_mid, line_after
                 ))

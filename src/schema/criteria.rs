@@ -3,9 +3,9 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
+use anyhow::{Context, Error};
 use serde::{Deserialize, Serialize};
 use serde_json::from_reader;
-use tiny_fail::{ErrorMessageExt, Fail};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Criteria {
@@ -51,13 +51,13 @@ fn default_enum_string_max() -> usize {
 pub struct Criterias(HashMap<String, Criteria>);
 
 impl Criterias {
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<Criterias, Fail> {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Criterias, Error> {
         let path = path.as_ref();
-        let f = File::open(path).err_msg(format!("failed load config file '{:?}'", path))?;
+        let f = File::open(path).context(format!("failed load config file '{:?}'", path))?;
         let r = BufReader::new(f);
 
         let criterias: HashMap<String, Criteria> =
-            from_reader(r).err_msg("failed parse config file")?;
+            from_reader(r).context("failed parse config file")?;
         Ok(Criterias(criterias))
     }
 

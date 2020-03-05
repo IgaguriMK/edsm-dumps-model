@@ -1,15 +1,18 @@
-use std::io::{stderr, Write};
+use std::borrow::Cow;
+use std::fs::File;
+use std::io::{stderr, Read, Write};
 use std::path::{Path, PathBuf};
 use std::thread::{sleep, spawn};
 use std::time::Duration;
 
+use anyhow::{Context, Error};
 use clap::{App, Arg};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use tiny_fail::{ErrorMessageExt, Fail};
+use serde::{Deserialize, Serialize};
+use serde_json::from_slice;
 
 use edsm_dumps_model::array_decoder::parallel::ParallelDecoder;
 use edsm_dumps_model::array_decoder::Progress;
-use edsm_dumps_model::config::Config;
 use edsm_dumps_model::model::body::Body;
 use edsm_dumps_model::model::powerplay::PowerPlay;
 use edsm_dumps_model::model::station::Station;
@@ -24,7 +27,7 @@ fn main() {
     }
 }
 
-fn w_main() -> Result<(), Fail> {
+fn w_main() -> Result<(), Error> {
     let matches = App::new("model_checker")
         .arg(
             Arg::with_name("target")
@@ -35,7 +38,7 @@ fn w_main() -> Result<(), Fail> {
         )
         .get_matches();
 
-    let cfg = Config::load("./config.toml").err_msg("failed load config file")?;
+    let cfg = Config::load("./config.toml").context("failed load config file")?;
 
     let dumps_dir = cfg.dumps_dir();
     let mut checker = Checker::new(dumps_dir.as_ref(), matches.value_of("target"));
@@ -67,7 +70,7 @@ impl<'a> Checker<'a> {
         }
     }
 
-    fn check_parse<D: 'static + RootEntry + Send>(&mut self, file_name: &str) -> Result<(), Fail> {
+    fn check_parse<D: 'static + RootEntry + Send>(&mut self, file_name: &str) -> Result<(), Error> {
         if let Some(check_target) = self.check_target {
             if check_target != file_name {
                 return Ok(());
@@ -97,7 +100,7 @@ impl<'a> Checker<'a> {
         Ok(())
     }
 
-    fn join(&mut self) -> Result<(), Fail> {
+    fn join(&mut self) -> Result<(), Error> {
         self.progresses.join()?;
         Ok(())
     }
@@ -107,12 +110,12 @@ fn check<D: 'static + RootEntry + Send>(
     path: PathBuf,
     progress: CheckProgress,
     file_name: String,
-) -> Result<(), Fail> {
+) -> Result<(), Error> {
     let mut dec = ParallelDecoder::<D>::start(path, progress)?;
 
     while let Some(_) = dec
         .read_entry()
-        .err_msg(format!("While checking '{}'", file_name))?
+        .context(format!("While checking '{}'", file_name))?
     {}
 
     Ok(())
@@ -141,5 +144,32 @@ impl Progress for CheckProgress {
 impl Drop for CheckProgress {
     fn drop(&mut self) {
         self.0.finish();
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct Config {
+    dumps_dir: Option<PathBuf>,
+}
+
+impl Config {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Config, Error> {
+        let path = path.as_ref();
+        let mut f = File::open(path).context(format!("failed load config file '{:?}'", path))?;
+
+        let mut buf = Vec::new();
+        f.read_to_end(&mut buf)
+            .context("error caused while reading config file")?;
+
+        let cfg: Config = from_slice(&buf).context("failed parse config file")?;
+        Ok(cfg)
+    }
+
+    pub fn dumps_dir(&self) -> Cow<'_, Path> {
+        match self.dumps_dir {
+            Some(ref v) => Cow::Borrowed(v),
+            None => Cow::Owned(".".into()),
+        }
     }
 }

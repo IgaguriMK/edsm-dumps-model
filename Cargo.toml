@@ -1,6 +1,6 @@
 [package]
 name = "edsm-dumps-model"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Igaguri <igagurimk@gmail.com>"]
 edition = "2018"
 
@@ -16,6 +16,7 @@ default-run = "model_check"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0"
 chrono = {version = "0.4.9", features = ["serde"]}
 clap = "2.33.0"
 filebuffer = "0.4.0"
@@ -25,8 +26,6 @@ serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0.41"
 strum = "0.16.0"
 strum_macros = "0.16.0"
-thiserror = "1.0.11"
-tiny_fail = "0.1.0"
 toml = "0.5.3"
 
 

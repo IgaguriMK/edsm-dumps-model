@@ -1,15 +1,16 @@
+use std::borrow::Cow;
 use std::fs::File;
-use std::io::{BufReader, BufWriter, Write};
+use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
 use std::thread::spawn;
 
+use anyhow::{Context, Error};
 use clap::{App, Arg};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use serde_json::Value;
-use tiny_fail::{ErrorMessageExt, Fail};
+use serde::{Deserialize, Serialize};
+use serde_json::{from_slice, Value};
 
 use edsm_dumps_model::array_decoder::{ArrayDecoder, Progress};
-use edsm_dumps_model::config::Config;
 use edsm_dumps_model::schema::criteria::{Criteria, Criterias};
 use edsm_dumps_model::schema::SchemaGenerator;
 
@@ -20,7 +21,7 @@ fn main() {
     }
 }
 
-fn w_main() -> Result<(), Fail> {
+fn w_main() -> Result<(), Error> {
     let matches = App::new("gen_schema")
         .arg(
             Arg::with_name("target")
@@ -31,8 +32,8 @@ fn w_main() -> Result<(), Fail> {
         )
         .get_matches();
 
-    let cfg = Config::load("./config.toml").err_msg("failed load config file")?;
-    let criterias = Criterias::load("./criterias.json").err_msg("failed load criterias file")?;
+    let cfg = Config::load("./config.toml").context("failed load config file")?;
+    let criterias = Criterias::load("./criterias.json").context("failed load criterias file")?;
 
     let dumps_dir = cfg.dumps_dir();
     let mut generator = Generator::new(dumps_dir.as_ref(), matches.value_of("target"), criterias);
@@ -66,7 +67,7 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn generate(&mut self, file_name: &str) -> Result<(), Fail> {
+    fn generate(&mut self, file_name: &str) -> Result<(), Error> {
         if let Some(check_target) = self.check_target {
             if check_target != file_name {
                 return Ok(());
@@ -94,7 +95,7 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn join(&mut self) -> Result<(), Fail> {
+    fn join(&mut self) -> Result<(), Error> {
         self.progresses.join()?;
         Ok(())
     }
@@ -105,8 +106,8 @@ fn gen(
     progress: CheckProgress,
     file_name: String,
     criteria: Criteria,
-) -> Result<(), Fail> {
-    let f = File::open(&path).err_msg(format!("failed open dump file '{:?}'", path))?;
+) -> Result<(), Error> {
+    let f = File::open(&path).context(format!("failed open dump file '{:?}'", path))?;
     let r = BufReader::new(f);
     let dec = ArrayDecoder::new(r);
 
@@ -116,7 +117,7 @@ fn gen(
 
     while let Some(val) = dec
         .read_entry::<Value>()
-        .err_msg(format!("While checking '{}'", file_name))?
+        .context(format!("While checking '{}'", file_name))?
     {
         schema_generator.add_value(val);
     }
@@ -156,5 +157,32 @@ impl Progress for CheckProgress {
 impl Drop for CheckProgress {
     fn drop(&mut self) {
         self.0.finish();
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct Config {
+    dumps_dir: Option<PathBuf>,
+}
+
+impl Config {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Config, Error> {
+        let path = path.as_ref();
+        let mut f = File::open(path).context(format!("failed load config file '{:?}'", path))?;
+
+        let mut buf = Vec::new();
+        f.read_to_end(&mut buf)
+            .context("error caused while reading config file")?;
+
+        let cfg: Config = from_slice(&buf).context("failed parse config file")?;
+        Ok(cfg)
+    }
+
+    pub fn dumps_dir(&self) -> Cow<'_, Path> {
+        match self.dumps_dir {
+            Some(ref v) => Cow::Borrowed(v),
+            None => Cow::Owned(".".into()),
+        }
     }
 }

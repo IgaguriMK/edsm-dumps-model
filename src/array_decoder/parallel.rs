@@ -7,9 +7,9 @@ use std::sync::mpsc::{sync_channel, Receiver, SyncSender, TrySendError};
 use std::thread::{Builder, JoinHandle};
 use std::vec::IntoIter;
 
+use anyhow::{Context, Error};
 use filebuffer::FileBuffer;
 use serde_json::from_str;
-use tiny_fail::{ErrorMessageExt, Fail};
 
 use super::Progress;
 use crate::model::RootEntry;
@@ -34,8 +34,8 @@ impl<D: 'static + Send + RootEntry> ParallelDecoder<D> {
     pub fn start(
         path: impl AsRef<Path>,
         progress: impl 'static + Send + Progress,
-    ) -> Result<ParallelDecoder<D>, Fail> {
-        let bytes = FileBuffer::open(path).err_msg("failed open file")?.leak();
+    ) -> Result<ParallelDecoder<D>, Error> {
+        let bytes = FileBuffer::open(path).context("failed open file")?.leak();
 
         let worker_cnt = get_worker_cnt();
 
@@ -69,7 +69,7 @@ impl<D: 'static + Send + RootEntry> ParallelDecoder<D> {
         })
     }
 
-    pub fn read_entry(&mut self) -> Result<Option<D>, Fail> {
+    pub fn read_entry(&mut self) -> Result<Option<D>, Error> {
         loop {
             if let Some(ref mut iter) = self.reading {
                 if let Some(x) = iter.next() {
@@ -157,7 +157,7 @@ fn spawn_decoder<D: 'static + Send + RootEntry>(
 fn decoder<D: 'static + Send + RootEntry>(
     recv: Receiver<Option<&'static [u8]>>,
     send: SyncSender<Option<Vec<D>>>,
-) -> Result<(), Fail> {
+) -> Result<(), Error> {
     let mut line = String::new();
 
     while let Some(mut bytes) = recv.recv().unwrap() {
@@ -178,7 +178,7 @@ fn decoder<D: 'static + Send + RootEntry>(
             }
             let s = D::pre_filter(s);
 
-            let v = from_str(s.as_ref()).err_msg(format!("failed parse entry with: {}", s))?;
+            let v = from_str(s.as_ref()).context(format!("failed parse entry with: {}", s))?;
             chunk.push(v);
         }
         send.send(Some(chunk)).unwrap();
