@@ -1,7 +1,5 @@
-use std::io::{stderr, Write};
 use std::path::{Path, PathBuf};
-use std::thread::{sleep, spawn};
-use std::time::Duration;
+use std::thread::spawn;
 
 use anyhow::{Context, Error};
 use clap::{App, Arg};
@@ -55,8 +53,8 @@ fn w_main() -> Result<(), Error> {
     checker.check_parse::<PowerPlay>("powerPlay.json")?;
     checker.check_parse::<Station>("stations.json")?;
     checker.check_parse::<SystemPopulated>("systemsPopulated.json")?;
-    checker.check_parse::<SystemWithCoordinates>("systemsWithCoordinates.json")?;
     checker.check_parse::<SystemWithoutCoordinates>("systemsWithoutCoordinates.json")?;
+    checker.check_parse::<SystemWithCoordinates>("systemsWithCoordinates.json")?;
     checker.check_parse::<Body>("bodies.json")?;
 
     checker.join()?;
@@ -96,26 +94,16 @@ impl<'a> Checker<'a> {
         let size = path.metadata()?.len();
         let file_name = file_name.to_owned();
 
-        let progress = CheckProgress(
-            self.progresses
-                .add(CheckProgress::new_bar(&file_name, size)),
-        );
-
-        let exec = move || {
-            if let Err(e) = check::<D>(path, progress, file_name) {
-                let err_out = stderr();
-                let mut err_out_lock = err_out.lock();
-                writeln!(err_out_lock, "{}", e).expect("failed to write to stderr");
-                err_out_lock.flush().expect("failed to flush to stderr");
-                sleep(Duration::from_millis(100));
-                std::process::exit(1);
-            }
-        };
-
         if self.seq_file {
-            exec();
+            let progress = CheckProgress(CheckProgress::new_bar(&file_name, size));
+
+            check::<D>(path, progress, file_name).expect("check failed");
         } else {
-            spawn(exec);
+            let progress = CheckProgress(
+                self.progresses
+                    .add(CheckProgress::new_bar(&file_name, size)),
+            );
+            spawn(|| check::<D>(path, progress, file_name).expect("check failed"));
         }
 
         Ok(())
