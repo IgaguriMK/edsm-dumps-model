@@ -1,11 +1,7 @@
 CRATE_NAME:=edsm-dumps-model
 
 .PHONY: all
-all: build check
-
-.PHONY: build
-build: soft-clean
-	cargo build
+all: check
 
 .PHONY: check
 check: soft-clean

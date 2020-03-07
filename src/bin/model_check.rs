@@ -1,6 +1,4 @@
-use std::borrow::Cow;
-use std::fs::File;
-use std::io::{stderr, Read, Write};
+use std::io::{stderr, Write};
 use std::path::{Path, PathBuf};
 use std::thread::{sleep, spawn};
 use std::time::Duration;
@@ -8,8 +6,6 @@ use std::time::Duration;
 use anyhow::{Context, Error};
 use clap::{App, Arg};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use serde::{Deserialize, Serialize};
-use serde_json::from_slice;
 
 use edsm_dumps_model::array_decoder::parallel::ParallelDecoder;
 use edsm_dumps_model::array_decoder::Progress;
@@ -20,9 +16,14 @@ use edsm_dumps_model::model::system::{SystemWithCoordinates, SystemWithoutCoordi
 use edsm_dumps_model::model::system_populated::SystemPopulated;
 use edsm_dumps_model::model::RootEntry;
 
+use edsm_dumps_model::config::Config;
+
 fn main() {
-    if let Err(fail) = w_main() {
-        eprintln!("Error: {}", fail);
+    if let Err(err) = w_main() {
+        eprintln!("Error: {}", err);
+        err.chain()
+            .skip(1)
+            .for_each(|cause| eprintln!("    because: {}", cause));
         std::process::exit(1);
     }
 }
@@ -36,6 +37,12 @@ fn w_main() -> Result<(), Error> {
                 .takes_value(true)
                 .help("Specify check target"),
         )
+        .arg(
+            Arg::with_name("seq-file")
+                .short("F")
+                .long("seq-file")
+                .help("Check files sequentially."),
+        )
         .get_matches();
 
     let cfg = Config::load("./config.toml").context("failed load config file")?;
@@ -43,12 +50,14 @@ fn w_main() -> Result<(), Error> {
     let dumps_dir = cfg.dumps_dir();
     let mut checker = Checker::new(dumps_dir.as_ref(), matches.value_of("target"));
 
-    checker.check_parse::<Body>("bodies.json")?;
+    checker.set_seq_file(matches.is_present("seq-file"));
+
     checker.check_parse::<PowerPlay>("powerPlay.json")?;
     checker.check_parse::<Station>("stations.json")?;
     checker.check_parse::<SystemPopulated>("systemsPopulated.json")?;
     checker.check_parse::<SystemWithCoordinates>("systemsWithCoordinates.json")?;
     checker.check_parse::<SystemWithoutCoordinates>("systemsWithoutCoordinates.json")?;
+    checker.check_parse::<Body>("bodies.json")?;
 
     checker.join()?;
 
@@ -56,6 +65,7 @@ fn w_main() -> Result<(), Error> {
 }
 
 struct Checker<'a> {
+    seq_file: bool,
     dir: &'a Path,
     check_target: Option<&'a str>,
     progresses: MultiProgress,
@@ -64,10 +74,15 @@ struct Checker<'a> {
 impl<'a> Checker<'a> {
     fn new(dir: &'a Path, check_target: Option<&'a str>) -> Checker<'a> {
         Checker {
+            seq_file: false,
             dir,
             check_target,
             progresses: MultiProgress::new(),
         }
+    }
+
+    fn set_seq_file(&mut self, seq: bool) {
+        self.seq_file = seq;
     }
 
     fn check_parse<D: 'static + RootEntry + Send>(&mut self, file_name: &str) -> Result<(), Error> {
@@ -86,16 +101,22 @@ impl<'a> Checker<'a> {
                 .add(CheckProgress::new_bar(&file_name, size)),
         );
 
-        spawn(move || {
+        let exec = move || {
             if let Err(e) = check::<D>(path, progress, file_name) {
                 let err_out = stderr();
                 let mut err_out_lock = err_out.lock();
-                writeln!(err_out_lock, "{}", e).unwrap();
-                err_out_lock.flush().unwrap();
+                writeln!(err_out_lock, "{}", e).expect("failed to write to stderr");
+                err_out_lock.flush().expect("failed to flush to stderr");
                 sleep(Duration::from_millis(100));
                 std::process::exit(1);
             }
-        });
+        };
+
+        if self.seq_file {
+            exec();
+        } else {
+            spawn(exec);
+        }
 
         Ok(())
     }
@@ -115,7 +136,7 @@ fn check<D: 'static + RootEntry + Send>(
 
     while let Some(_) = dec
         .read_entry()
-        .context(format!("While checking '{}'", file_name))?
+        .with_context(|| format!("While checking '{}'", file_name))?
     {}
 
     Ok(())
@@ -144,32 +165,5 @@ impl Progress for CheckProgress {
 impl Drop for CheckProgress {
     fn drop(&mut self) {
         self.0.finish();
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub struct Config {
-    dumps_dir: Option<PathBuf>,
-}
-
-impl Config {
-    pub fn load<P: AsRef<Path>>(path: P) -> Result<Config, Error> {
-        let path = path.as_ref();
-        let mut f = File::open(path).context(format!("failed load config file '{:?}'", path))?;
-
-        let mut buf = Vec::new();
-        f.read_to_end(&mut buf)
-            .context("error caused while reading config file")?;
-
-        let cfg: Config = from_slice(&buf).context("failed parse config file")?;
-        Ok(cfg)
-    }
-
-    pub fn dumps_dir(&self) -> Cow<'_, Path> {
-        match self.dumps_dir {
-            Some(ref v) => Cow::Borrowed(v),
-            None => Cow::Owned(".".into()),
-        }
     }
 }
