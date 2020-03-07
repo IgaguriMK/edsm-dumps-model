@@ -84,6 +84,7 @@ display_via_serde!(Government);
 #[serde(deny_unknown_fields)]
 pub enum Happiness {
     Despondent,
+    Unhappy,
     Discontented,
     None,
     Happy,
@@ -131,16 +132,25 @@ pub enum State {
     CivilUnrest,
     #[serde(rename = "Civil war")]
     CivilWar,
+    Drought,
     Election,
     Expansion,
     Famine,
+    #[serde(rename = "Infrastructure Failure")]
+    InfrastructureFailure,
     Investment,
     Lockdown,
+    #[serde(rename = "Natural Disaster")]
+    NaturalDisaster,
     None,
     Outbreak,
     #[serde(rename = "Pirate attack")]
     PirateAttack,
+    #[serde(rename = "Public Holiday")]
+    PublicHoliday,
     Retreat,
+    #[serde(rename = "Terrorist Attack")]
+    TerroristAttack,
     War,
 }
 
