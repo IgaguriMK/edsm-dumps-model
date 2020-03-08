@@ -202,8 +202,8 @@ impl ChunkParser {
             }
 
             let s = D::pre_filter(s);
-            let v = from_str(s.as_ref())
-                .with_context(|| format!("failed parse line: {}", self.buf))?;
+            let v =
+                from_str(s.as_ref()).with_context(|| format!("failed parse line: {}", self.buf))?;
             values.push(v);
         }
         if values.len() > self.max_values_len {
