@@ -180,7 +180,6 @@ impl ChunkParser {
         mut bs: &[u8],
     ) -> Result<Vec<D>, Error> {
         let mut values = Vec::<D>::with_capacity(self.max_values_len);
-        let orig_bs = bs.to_owned();
 
         loop {
             self.buf.clear();
@@ -202,8 +201,9 @@ impl ChunkParser {
                 continue;
             }
 
-            let v = from_str(s)
-                .with_context(|| format!("failed parse line({:?}): \"{}\"", orig_bs, self.buf))?;
+            let s = D::pre_filter(s);
+            let v = from_str(s.as_ref())
+                .with_context(|| format!("failed parse line: {}", self.buf))?;
             values.push(v);
         }
         if values.len() > self.max_values_len {
