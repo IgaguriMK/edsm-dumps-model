@@ -53,11 +53,19 @@ pub struct Coords {
 
 impl Coords {
     pub fn abs(self) -> f32 {
-        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
+        self.abs2().sqrt()
+    }
+
+    pub fn abs2(self) -> f32 {
+        self.x.powi(2) + self.y.powi(2) + self.z.powi(2)
     }
 
     pub fn dist(self, other: Coords) -> f32 {
         (self - other).abs()
+    }
+
+    pub fn dist2(self, other: Coords) -> f32 {
+        (self - other).abs2()
     }
 }
 
