@@ -143,11 +143,7 @@ impl SchemaType {
                 typ: SchemaTypes::Unit,
             },
             1 => {
-                let t = types
-                    .into_iter()
-                    .filter(|t| *t != Type::Null)
-                    .nth(0)
-                    .unwrap();
+                let t = types.into_iter().find(|t| *t != Type::Null).unwrap();
                 let typ = SchemaTypes::parse(builder, t);
 
                 SchemaType { is_nullable, typ }

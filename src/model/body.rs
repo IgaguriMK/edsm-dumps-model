@@ -54,9 +54,9 @@ impl Body {
 
     pub fn system_name(&self) -> Option<&str> {
         match self {
-            Body::Planet(x) => x.system_name.as_ref().map(|s| s.as_str()),
-            Body::Star(x) => x.system_name.as_ref().map(|s| s.as_str()),
-            Body::Unknown(x) => x.system_name.as_ref().map(|s| s.as_str()),
+            Body::Planet(x) => x.system_name.as_deref(),
+            Body::Star(x) => x.system_name.as_deref(),
+            Body::Unknown(x) => x.system_name.as_deref(),
         }
     }
 }
@@ -125,9 +125,9 @@ impl BodyS {
 
     pub fn system_name(&self) -> Option<&str> {
         match self {
-            BodyS::Planet(x) => x.system_name.as_ref().map(|s| s.as_str()),
-            BodyS::Star(x) => x.system_name.as_ref().map(|s| s.as_str()),
-            BodyS::Unknown(x) => x.system_name.as_ref().map(|s| s.as_str()),
+            BodyS::Planet(x) => x.system_name.as_deref(),
+            BodyS::Star(x) => x.system_name.as_deref(),
+            BodyS::Unknown(x) => x.system_name.as_deref(),
         }
     }
 }
