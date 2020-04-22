@@ -1,3 +1,4 @@
+mod file;
 pub mod parallel;
 
 use std::io::BufRead;

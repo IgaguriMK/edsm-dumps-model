@@ -1,6 +1,5 @@
 use std::collections::BTreeMap;
 use std::env;
-use std::fs::File;
 use std::io::{self, BufRead, Read};
 use std::mem::{drop, swap};
 use std::path::{Path, PathBuf};
@@ -11,6 +10,7 @@ use anyhow::{Context, Error};
 use crossbeam_channel::{bounded, Receiver, Sender};
 use serde_json::from_str;
 
+use super::file::open_detect;
 use super::Progress;
 use crate::model::RootEntry;
 
@@ -97,7 +97,7 @@ fn read(
     send: Sender<(usize, Result<Vec<u8>, Error>)>,
     mut progress: impl 'static + Send + Progress,
 ) {
-    let f = match File::open(&path).context("failed to open input file") {
+    let f = match open_detect(&path).context("failed to open input file") {
         Ok(v) => v,
         Err(e) => {
             send.send((0, Err(e))).expect("failed to send input value");
