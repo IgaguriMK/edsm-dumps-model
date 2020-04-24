@@ -10,7 +10,7 @@ use anyhow::{Context, Error};
 use crossbeam_channel::{bounded, Receiver, Sender};
 use serde_json::from_str;
 
-use super::file::open_detect;
+use super::file::DetectReader;
 use super::Progress;
 use crate::model::RootEntry;
 
@@ -95,9 +95,9 @@ impl<D: 'static + Send + RootEntry> ParallelDecoder<D> {
 fn read(
     path: PathBuf,
     send: Sender<(usize, Result<Vec<u8>, Error>)>,
-    mut progress: impl 'static + Send + Progress,
+    progress: impl 'static + Send + Progress,
 ) {
-    let f = match open_detect(&path).context("failed to open input file") {
+    let f = match DetectReader::open_detect(&path, progress).context("failed to open input file") {
         Ok(v) => v,
         Err(e) => {
             send.send((0, Err(e))).expect("failed to send input value");
@@ -112,8 +112,6 @@ fn read(
             .context("failed to read input chunk")
         {
             Ok(Some(bs)) => {
-                progress.inc(bs.len());
-
                 send.send((idx, Ok(bs)))
                     .expect("failed to send input value");
             }

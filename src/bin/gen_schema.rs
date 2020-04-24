@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufReader, BufWriter, Write};
+use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::thread::spawn;
 
@@ -109,11 +109,7 @@ fn gen(
     file_name: String,
     criteria: Criteria,
 ) -> Result<(), Error> {
-    let f = File::open(&path).context(format!("failed open dump file '{:?}'", path))?;
-    let r = BufReader::new(f);
-    let dec = ArrayDecoder::new(r);
-
-    let mut dec = dec.set_progress(progress);
+    let mut dec = ArrayDecoder::open(&path, progress).context("")?;
 
     let mut schema_generator = SchemaGenerator::new(criteria);
 

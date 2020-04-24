@@ -2,50 +2,53 @@ mod file;
 pub mod parallel;
 
 use std::io::BufRead;
+use std::path::Path;
 
 use anyhow::{Context, Error};
 use serde_json::from_str;
 
 use crate::model::RootEntry;
+use file::{DetectReader, ProgressReader};
 
 const ERROR_COLOR_LEN: usize = 20;
 
 #[derive(Debug)]
-pub struct ArrayDecoder<R: BufRead, P: Progress = NopProgress> {
+pub struct ArrayDecoder<R: BufRead> {
     r: R,
     line: usize,
     buf: String,
-    progress: P,
 }
 
-impl<R: BufRead> ArrayDecoder<R> {
-    pub fn new(r: R) -> ArrayDecoder<R> {
+impl<R: BufRead, P: Progress> ArrayDecoder<ProgressReader<R, P>> {
+    pub fn new(r: R, progress: P) -> ArrayDecoder<ProgressReader<R, P>> {
         ArrayDecoder {
+            r: ProgressReader::new(r, progress),
+            line: 0,
+            buf: String::new(),
+        }
+    }
+}
+
+impl<P: Progress> ArrayDecoder<DetectReader<P>> {
+    pub fn open(
+        path: impl AsRef<Path>,
+        progress: P,
+    ) -> Result<ArrayDecoder<DetectReader<P>>, Error> {
+        let r = DetectReader::open_detect(path, progress)?;
+        Ok(ArrayDecoder {
             r,
             line: 0,
             buf: String::new(),
-            progress: NopProgress,
-        }
-    }
-
-    pub fn set_progress<P: Progress>(self, progress: P) -> ArrayDecoder<R, P> {
-        ArrayDecoder {
-            r: self.r,
-            line: self.line,
-            buf: String::new(),
-            progress,
-        }
+        })
     }
 }
 
-impl<R: BufRead, P: Progress> ArrayDecoder<R, P> {
+impl<R: BufRead> ArrayDecoder<R> {
     fn read_line(&mut self) -> Result<Option<&str>, Error> {
         self.buf.truncate(0);
-        let n = self
-            .r
+        self.r
             .read_line(&mut self.buf)
             .context(format!("failed read dump file at line {}", self.line))?;
-        self.progress.inc(n);
         self.line += 1;
 
         if self.buf.trim() == "[" {
