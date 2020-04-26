@@ -1,6 +1,6 @@
 [package]
 name = "edsm-dumps-model"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["Igaguri <igagurimk@gmail.com>"]
 edition = "2018"
 
@@ -20,9 +20,10 @@ anyhow = "1.0"
 chrono = {version = "0.4.9", features = ["serde"]}
 clap = "2.33.0"
 crossbeam-channel = "0.4.2"
-either = "1.5.3"
+detect-compression = "0.1.1"
 flate2 = "1.0.14"
 indicatif = "0.14.0"
+lz4 = "1.23.1"
 num_cpus = "1.11.1"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0.41"

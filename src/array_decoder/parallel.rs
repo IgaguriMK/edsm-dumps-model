@@ -10,8 +10,9 @@ use anyhow::{Context, Error};
 use crossbeam_channel::{bounded, Receiver, Sender};
 use serde_json::from_str;
 
-use super::file::DetectReader;
-use super::Progress;
+use detect_compression::DetectReader;
+
+use super::{Progress, ProgressReaderBuilder};
 use crate::model::RootEntry;
 
 const INPUT_CHUNK_SIZE: usize = 8 * 1024 * 1024;
@@ -97,7 +98,10 @@ fn read(
     send: Sender<(usize, Result<Vec<u8>, Error>)>,
     progress: impl 'static + Send + Progress,
 ) {
-    let f = match DetectReader::open_detect(&path, progress).context("failed to open input file") {
+    let builder = ProgressReaderBuilder::new(progress);
+    let f = match DetectReader::open_with_wrapper(&path, builder)
+        .context("failed to open input file")
+    {
         Ok(v) => v,
         Err(e) => {
             send.send((0, Err(e))).expect("failed to send input value");
