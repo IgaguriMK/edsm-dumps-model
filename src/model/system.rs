@@ -24,6 +24,21 @@ pub struct SystemWithCoordinates {
 
 impl RootEntry for SystemWithCoordinates {}
 
+impl System for SystemWithCoordinates {
+    fn id(&self) -> u64 {
+        self.id
+    }
+    fn id64(&self) -> Option<u64> {
+        self.id64
+    }
+    fn name(&self) -> &str {
+        &self.name
+    }
+    fn date(&self) -> DateTime<Utc> {
+        self.date
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -39,6 +54,28 @@ pub struct SystemWithoutCoordinates {
 }
 
 impl RootEntry for SystemWithoutCoordinates {}
+
+impl System for SystemWithoutCoordinates {
+    fn id(&self) -> u64 {
+        self.id
+    }
+    fn id64(&self) -> Option<u64> {
+        self.id64
+    }
+    fn name(&self) -> &str {
+        &self.name
+    }
+    fn date(&self) -> DateTime<Utc> {
+        self.date
+    }
+}
+
+pub trait System {
+    fn id(&self) -> u64;
+    fn id64(&self) -> Option<u64>;
+    fn name(&self) -> &str;
+    fn date(&self) -> DateTime<Utc>;
+}
 
 // Field Type
 
