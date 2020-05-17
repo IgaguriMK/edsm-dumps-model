@@ -164,6 +164,7 @@ pub struct Planet {
     pub axial_tilt: Option<f32>,
     pub belts: Option<Vec<Belt>>,
     pub body_id: Option<u64>,
+    pub discovery: Option<Discovery>,
     pub distance_to_arrival: u64,
     pub earth_masses: f32,
     pub gravity: Option<f32>,
@@ -207,6 +208,7 @@ pub struct Star {
     pub axial_tilt: Option<f32>,
     pub belts: Option<Vec<Belt>>,
     pub body_id: Option<u64>,
+    pub discovery: Option<Discovery>,
     pub distance_to_arrival: u64,
     pub id64: Option<u64>,
     pub is_main_star: bool,
@@ -481,6 +483,15 @@ pub struct Belt {
     pub outer_radius: f32,
     #[serde(rename = "type")]
     pub typ: Option<AsteroidType>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Discovery {
+    pub commander: String,
+    #[serde(with = "date_format")]
+    pub date: DateTime<Utc>,
 }
 
 #[derive(
