@@ -14,6 +14,40 @@ use crate::display_via_serde;
 
 // Main Type
 
+pub trait BodyT {
+    fn id(&self) -> u64;
+    fn id64(&self) -> Option<u64>;
+    fn system_id(&self) -> Option<u64>;
+    fn system_id64(&self) -> Option<u64>;
+    fn update_time(&self) -> DateTime<Utc>;
+    fn name(&self) -> &str;
+    fn system_name(&self) -> Option<&str>;
+}
+
+impl<T: BodyT> BodyT for &T {
+    fn id(&self) -> u64 {
+        (*self).id()
+    }
+    fn id64(&self) -> Option<u64> {
+        (*self).id64()
+    }
+    fn system_id(&self) -> Option<u64> {
+        (*self).system_id()
+    }
+    fn system_id64(&self) -> Option<u64> {
+        (*self).system_id64()
+    }
+    fn update_time(&self) -> DateTime<Utc> {
+        (*self).update_time()
+    }
+    fn name(&self) -> &str {
+        (*self).name()
+    }
+    fn system_name(&self) -> Option<&str> {
+        (*self).system_name()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
@@ -27,7 +61,7 @@ pub enum Body {
 
 macro_rules! body_common_field {
     ($f:ident, $ty:ty ) => {
-        pub fn $f(&self) -> $ty {
+        fn $f(&self) -> $ty {
             match self {
                 Body::Planet(x) => x.$f,
                 Body::Star(x) => x.$f,
@@ -37,14 +71,14 @@ macro_rules! body_common_field {
     };
 }
 
-impl Body {
+impl BodyT for Body {
     body_common_field!(id, u64);
     body_common_field!(id64, Option<u64>);
     body_common_field!(system_id, Option<u64>);
     body_common_field!(system_id64, Option<u64>);
     body_common_field!(update_time, DateTime<Utc>);
 
-    pub fn name(&self) -> &str {
+    fn name(&self) -> &str {
         match self {
             Body::Planet(x) => &x.name,
             Body::Star(x) => &x.name,
@@ -52,7 +86,7 @@ impl Body {
         }
     }
 
-    pub fn system_name(&self) -> Option<&str> {
+    fn system_name(&self) -> Option<&str> {
         match self {
             Body::Planet(x) => x.system_name.as_deref(),
             Body::Star(x) => x.system_name.as_deref(),
@@ -98,7 +132,7 @@ pub enum BodyS {
 
 macro_rules! body_s_common_field {
     ($f:ident, $ty:ty ) => {
-        pub fn $f(&self) -> $ty {
+        fn $f(&self) -> $ty {
             match self {
                 BodyS::Planet(x) => x.$f,
                 BodyS::Star(x) => x.$f,
@@ -108,14 +142,14 @@ macro_rules! body_s_common_field {
     };
 }
 
-impl BodyS {
+impl BodyT for BodyS {
     body_s_common_field!(id, u64);
     body_s_common_field!(id64, Option<u64>);
     body_s_common_field!(system_id, Option<u64>);
     body_s_common_field!(system_id64, Option<u64>);
     body_s_common_field!(update_time, DateTime<Utc>);
 
-    pub fn name(&self) -> &str {
+    fn name(&self) -> &str {
         match self {
             BodyS::Planet(x) => &x.name,
             BodyS::Star(x) => &x.name,
@@ -123,7 +157,7 @@ impl BodyS {
         }
     }
 
-    pub fn system_name(&self) -> Option<&str> {
+    fn system_name(&self) -> Option<&str> {
         match self {
             BodyS::Planet(x) => x.system_name.as_deref(),
             BodyS::Star(x) => x.system_name.as_deref(),
@@ -196,6 +230,30 @@ pub struct Planet {
     pub update_time: DateTime<Utc>,
 }
 
+impl BodyT for Planet {
+    fn id(&self) -> u64 {
+        self.id
+    }
+    fn id64(&self) -> Option<u64> {
+        self.id64
+    }
+    fn system_id(&self) -> Option<u64> {
+        self.system_id
+    }
+    fn system_id64(&self) -> Option<u64> {
+        self.system_id64
+    }
+    fn update_time(&self) -> DateTime<Utc> {
+        self.update_time
+    }
+    fn name(&self) -> &str {
+        &self.name
+    }
+    fn system_name(&self) -> Option<&str> {
+        self.system_name.as_deref()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
@@ -237,6 +295,30 @@ pub struct Star {
     pub update_time: DateTime<Utc>,
 }
 
+impl BodyT for Star {
+    fn id(&self) -> u64 {
+        self.id
+    }
+    fn id64(&self) -> Option<u64> {
+        self.id64
+    }
+    fn system_id(&self) -> Option<u64> {
+        self.system_id
+    }
+    fn system_id64(&self) -> Option<u64> {
+        self.system_id64
+    }
+    fn update_time(&self) -> DateTime<Utc> {
+        self.update_time
+    }
+    fn name(&self) -> &str {
+        &self.name
+    }
+    fn system_name(&self) -> Option<&str> {
+        self.system_name.as_deref()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Unknown {
@@ -250,6 +332,30 @@ pub struct Unknown {
     // Metadata
     #[serde(with = "date_format")]
     pub update_time: DateTime<Utc>,
+}
+
+impl BodyT for Unknown {
+    fn id(&self) -> u64 {
+        self.id
+    }
+    fn id64(&self) -> Option<u64> {
+        self.id64
+    }
+    fn system_id(&self) -> Option<u64> {
+        self.system_id
+    }
+    fn system_id64(&self) -> Option<u64> {
+        self.system_id64
+    }
+    fn update_time(&self) -> DateTime<Utc> {
+        self.update_time
+    }
+    fn name(&self) -> &str {
+        &self.name
+    }
+    fn system_name(&self) -> Option<&str> {
+        self.system_name.as_deref()
+    }
 }
 
 // Field Type
