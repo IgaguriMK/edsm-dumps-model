@@ -731,6 +731,31 @@ pub enum PlanetSubType {
     WaterWorld,
 }
 
+impl PlanetSubType {
+    pub fn short(self) -> &'static str {
+        match self {
+            PlanetSubType::ClassIGasGiant => "C1GG",
+            PlanetSubType::ClassIiGasGiant => "C2GG",
+            PlanetSubType::ClassIiiGasGiant => "C3GG",
+            PlanetSubType::ClassIvGasGiant => "C4GG",
+            PlanetSubType::ClassVGasGiant => "C5GG",
+            PlanetSubType::GasGiantWithAmmoniaBasedLife => "GGwABL",
+            PlanetSubType::GasGiantWithWaterBasedLife => "GGwWBL",
+            PlanetSubType::HeliumGasGiant => "HGG",
+            PlanetSubType::HeliumRichGasGiant => "HRGG",
+            PlanetSubType::WaterGiant => "WG",
+            PlanetSubType::AmmoniaWorld => "AW",
+            PlanetSubType::EarthLikeWorld => "ELW",
+            PlanetSubType::HighMetalContentWorld => "HMC",
+            PlanetSubType::IcyBody => "I",
+            PlanetSubType::MetalRichBody => "MR",
+            PlanetSubType::RockyIceWorld => "RI",
+            PlanetSubType::RockyBody => "R",
+            PlanetSubType::WaterWorld => "WW",
+        }
+    }
+}
+
 display_via_serde!(PlanetSubType);
 
 #[derive(
@@ -790,6 +815,28 @@ pub enum StarClass {
     WolfRayetStars,
     WhiteDwarfStars,
     NonSequenceStars,
+}
+
+impl StarClass {
+    pub fn short(self) -> &'static str {
+        match self {
+            StarClass::OTypeStars => "O",
+            StarClass::BTypeStars => "B",
+            StarClass::ATypeStars => "A",
+            StarClass::FTypeStars => "F",
+            StarClass::GTypeStars => "G",
+            StarClass::KTypeStars => "K",
+            StarClass::MTypeStars => "M",
+            StarClass::LTypeStars => "L",
+            StarClass::TTypeStars => "T",
+            StarClass::YTypeStars => "Y",
+            StarClass::ProtoStars => "P",
+            StarClass::CarbonStars => "C",
+            StarClass::WolfRayetStars => "W",
+            StarClass::WhiteDwarfStars => "WD",
+            StarClass::NonSequenceStars => "NS",
+        }
+    }
 }
 
 impl fmt::Display for StarClass {
@@ -939,26 +986,16 @@ pub enum SpectralClass {
     AeBe7,
     AeBe8,
     AeBe9,
-    #[serde(rename = "TTS0")]
-    Tts0,
-    #[serde(rename = "TTS1")]
-    Tts1,
-    #[serde(rename = "TTS2")]
-    Tts2,
-    #[serde(rename = "TTS3")]
-    Tts3,
-    #[serde(rename = "TTS4")]
-    Tts4,
-    #[serde(rename = "TTS5")]
-    Tts5,
-    #[serde(rename = "TTS6")]
-    Tts6,
-    #[serde(rename = "TTS7")]
-    Tts7,
-    #[serde(rename = "TTS8")]
-    Tts8,
-    #[serde(rename = "TTS9")]
-    Tts9,
+    TTS0,
+    TTS1,
+    TTS2,
+    TTS3,
+    TTS4,
+    TTS5,
+    TTS6,
+    TTS7,
+    TTS8,
+    TTS9,
 }
 
 display_via_serde!(SpectralClass);
@@ -1063,6 +1100,56 @@ pub enum StarSubType {
     BlackHole,
     #[serde(rename = "Supermassive Black Hole")]
     SupermassiveBlackHole,
+}
+
+impl StarSubType {
+    pub fn short(self) -> &'static str {
+        match self {
+            StarSubType::OBlueWhiteStar => "O",
+            StarSubType::BBlueWhiteStar => "B",
+            StarSubType::ABlueWhiteStar => "A",
+            StarSubType::FWhiteStar => "F",
+            StarSubType::GWhiteYellowStar => "G",
+            StarSubType::KYellowOrangeStar => "K",
+            StarSubType::MRedDwarfStar => "M",
+            StarSubType::KYellowOrangeGiantStar => "Kg",
+            StarSubType::MRedGiantStar => "Mg",
+            StarSubType::BBlueWhiteSuperGiantStar => "Bsg",
+            StarSubType::ABlueWhiteSuperGiantStar => "Asg",
+            StarSubType::FWhiteSuperGiantStar => "Fsg",
+            StarSubType::GWhiteYellowSuperGiantStar => "Gsg",
+            StarSubType::MRedSuperGiantStar => "Msg",
+            StarSubType::LBrownDwarfStar => "L",
+            StarSubType::TBrownDwarfStar => "T",
+            StarSubType::YBrownDwarfStar => "Y",
+            StarSubType::HerbigAeBeStar => "HeBe",
+            StarSubType::TTauriStar => "TTS",
+            StarSubType::CStar => "C",
+            StarSubType::CJStar => "CJ",
+            StarSubType::CNStar => "CN",
+            StarSubType::MSTypeStar => "MS",
+            StarSubType::STypeStar => "S",
+            StarSubType::WolfRayetStar => "W",
+            StarSubType::WolfRayetCStar => "WC",
+            StarSubType::WolfRayetNStar => "WN",
+            StarSubType::WolfRayetNCStar => "WNC",
+            StarSubType::WolfRayetOStar => "WO",
+            StarSubType::WhiteDwarfDStar => "D",
+            StarSubType::WhiteDwarfDAStar => "Da",
+            StarSubType::WhiteDwarfDABStar => "Dab",
+            StarSubType::WhiteDwarfDAVStar => "Dv",
+            StarSubType::WhiteDwarfDAZStar => "Daz",
+            StarSubType::WhiteDwarfDBStar => "Db",
+            StarSubType::WhiteDwarfDBVStar => "Dbv",
+            StarSubType::WhiteDwarfDBZStar => "Dbz",
+            StarSubType::WhiteDwarfDCStar => "Dc",
+            StarSubType::WhiteDwarfDCVStar => "Dcv",
+            StarSubType::WhiteDwarfDQStar => "Dq",
+            StarSubType::NeutronStar => "N",
+            StarSubType::BlackHole => "BH",
+            StarSubType::SupermassiveBlackHole => "sBH",
+        }
+    }
 }
 
 display_via_serde!(StarSubType);
