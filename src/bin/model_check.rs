@@ -122,9 +122,10 @@ fn check<D: 'static + RootEntry + Send>(
 ) -> Result<(), Error> {
     let mut dec = ParallelDecoder::<D>::start(path, progress)?;
 
-    while let Some(_) = dec
+    while dec
         .read_entry()
         .with_context(|| format!("While checking '{}'", file_name))?
+        .is_some()
     {}
 
     Ok(())
