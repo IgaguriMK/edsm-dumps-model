@@ -1,10 +1,9 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, VecDeque};
 use std::env;
 use std::io::{self, BufRead, Read};
 use std::mem::{drop, swap};
 use std::path::{Path, PathBuf};
 use std::thread::Builder;
-use std::vec::IntoIter;
 
 use anyhow::{Context, Error};
 use crossbeam_channel::{bounded, Receiver, Sender};
@@ -17,13 +16,13 @@ use crate::model::RootEntry;
 
 const INPUT_CHUNK_SIZE: usize = 8 * 1024 * 1024;
 const INPUT_BYTES_CHANNEL_BUF: usize = 1024;
-const INPUT_LINE_BUFFER_INITIAL_SIZE: usize = 1024;
+const INPUT_LINE_BUFFER_INITIAL_SIZE: usize = 32 * 1024;
 const PARSED_CHANNEL_BUF: usize = 256;
 const RESULT_CHANNEL_BUF: usize = 256;
 const WORKER_MULT: usize = 2;
 
 pub struct ParallelDecoder<D> {
-    reading: IntoIter<D>,
+    reading: VecDeque<D>,
     recv: Receiver<Result<Vec<D>, Error>>,
 }
 
@@ -67,20 +66,20 @@ impl<D: 'static + Send + RootEntry> ParallelDecoder<D> {
             .context("failed spawn collector")?;
 
         Ok(ParallelDecoder {
-            reading: Vec::new().into_iter(),
+            reading: VecDeque::new(),
             recv: result_recv,
         })
     }
 
     pub fn read_entry(&mut self) -> Result<Option<D>, Error> {
         loop {
-            if let Some(v) = self.reading.next() {
+            if let Some(v) = self.reading.pop_front() {
                 return Ok(Some(v));
             }
 
             match self.recv.recv() {
                 Ok(Ok(vs)) => {
-                    self.reading = vs.into_iter();
+                    self.reading = vs.into();
                 }
                 Ok(Err(e)) => {
                     return Err(e);
@@ -88,6 +87,20 @@ impl<D: 'static + Send + RootEntry> ParallelDecoder<D> {
                 Err(_) => {
                     return Ok(None);
                 }
+            }
+        }
+    }
+
+    pub fn read_entries(&mut self) -> Result<Option<Vec<D>>, Error> {
+        if !self.reading.is_empty() {
+            let mut vs = Vec::with_capacity(self.reading.len());
+            vs.extend(self.reading.drain(..));
+            Ok(Some(vs))
+        } else {
+            match self.recv.recv() {
+                Ok(Ok(vs)) => Ok(Some(vs)),
+                Ok(Err(e)) => Err(e),
+                Err(_) => Ok(None),
             }
         }
     }
