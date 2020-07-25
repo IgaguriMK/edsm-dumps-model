@@ -405,6 +405,10 @@ pub enum AtmosphereCompositionKey {
     Water,
 }
 
+impl AtmosphereCompositionKey {
+    pub const VARIANTS: usize = 13;
+}
+
 display_via_serde!(AtmosphereCompositionKey);
 
 #[derive(
@@ -577,6 +581,10 @@ pub enum AtmosphereType {
     ThinWaterRich,
 }
 
+impl AtmosphereType {
+    pub const VARIANTS: usize = 83;
+}
+
 display_via_serde!(AtmosphereType);
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -632,6 +640,10 @@ pub enum Luminosity {
     O,
 }
 
+impl Luminosity {
+    pub const VARIANTS: usize = 25;
+}
+
 display_via_serde!(Luminosity);
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -674,6 +686,10 @@ pub enum MaterialsKey {
     Yttrium,
     Zinc,
     Zirconium,
+}
+
+impl MaterialsKey {
+    pub const VARIANTS: usize = 25;
 }
 
 display_via_serde!(MaterialsKey);
@@ -732,6 +748,8 @@ pub enum PlanetSubType {
 }
 
 impl PlanetSubType {
+    pub const VARIANTS: usize = 18;
+
     pub fn short(self) -> &'static str {
         match self {
             PlanetSubType::ClassIGasGiant => "C1GG",
@@ -768,6 +786,10 @@ pub enum ReserveLevel {
     Common,
     Major,
     Pristine,
+}
+
+impl ReserveLevel {
+    pub const VARIANTS: usize = 5;
 }
 
 display_via_serde!(ReserveLevel);
@@ -818,6 +840,8 @@ pub enum StarClass {
 }
 
 impl StarClass {
+    pub const VARIANTS: usize = 15;
+
     pub fn short(self) -> &'static str {
         match self {
             StarClass::OTypeStars => "O",
@@ -998,6 +1022,10 @@ pub enum SpectralClass {
     TTS9,
 }
 
+impl SpectralClass {
+    pub const VARIANTS: usize = 128;
+}
+
 display_via_serde!(SpectralClass);
 
 #[derive(
@@ -1103,6 +1131,8 @@ pub enum StarSubType {
 }
 
 impl StarSubType {
+    pub const VARIANTS: usize = 43;
+
     pub fn short(self) -> &'static str {
         match self {
             StarSubType::OBlueWhiteStar => "O",
@@ -1217,6 +1247,10 @@ pub enum TerraformingState {
     Terraforming,
 }
 
+impl TerraformingState {
+    pub const VARIANTS: usize = 4;
+}
+
 display_via_serde!(TerraformingState);
 
 #[derive(
@@ -1276,4 +1310,201 @@ pub enum VolcanismType {
     WaterMagma,
 }
 
+impl VolcanismType {
+    pub const VARIANTS: usize = 25;
+}
+
 display_via_serde!(VolcanismType);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn atmosphere_composition_key_check_variants_count() {
+        let mut max = 0;
+        let n = AtmosphereCompositionKey::VARIANTS;
+        for v in AtmosphereCompositionKey::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn atmosphere_type_check_variants_count() {
+        let mut max = 0;
+        let n = AtmosphereType::VARIANTS;
+        for v in AtmosphereType::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn luminosity_check_variants_count() {
+        let mut max = 0;
+        let n = Luminosity::VARIANTS;
+        for v in Luminosity::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn materials_key_check_variants_count() {
+        let mut max = 0;
+        let n = MaterialsKey::VARIANTS;
+        for v in MaterialsKey::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn planet_sub_type_check_variants_count() {
+        let mut max = 0;
+        let n = PlanetSubType::VARIANTS;
+        for v in PlanetSubType::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn reserve_level_check_variants_count() {
+        let mut max = 0;
+        let n = ReserveLevel::VARIANTS;
+        for v in ReserveLevel::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn star_class_check_variants_count() {
+        let mut max = 0;
+        let n = StarClass::VARIANTS;
+        for v in StarClass::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn spectral_class_check_variants_count() {
+        let mut max = 0;
+        let n = SpectralClass::VARIANTS;
+        for v in SpectralClass::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn star_sub_type_check_variants_count() {
+        let mut max = 0;
+        let n = StarSubType::VARIANTS;
+        for v in StarSubType::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn terraforming_state_check_variants_count() {
+        let mut max = 0;
+        let n = TerraformingState::VARIANTS;
+        for v in TerraformingState::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+
+    #[test]
+    fn volcanism_type_check_variants_count() {
+        let mut max = 0;
+        let n = VolcanismType::VARIANTS;
+        for v in VolcanismType::iter() {
+            let x = v as usize;
+            assert!(
+                x < n,
+                "type index ({}) should be smaller than variants count ({})",
+                x,
+                n
+            );
+            max = max.max(x);
+        }
+        assert_eq!(n, max + 1);
+    }
+}
