@@ -18,5 +18,3 @@ pub trait RootEntry: DeserializeOwned {
         Cow::Borrowed(s)
     }
 }
-
-impl RootEntry for serde_json::Value {}

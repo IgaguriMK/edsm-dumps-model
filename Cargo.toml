@@ -35,7 +35,3 @@ toml = "0.5.3"
 [[bin]]
 name = "model_check"
 path = "src/bin/model_check.rs"
-
-[[bin]]
-name = "gen_schema"
-path = "src/bin/gen_schema.rs"
