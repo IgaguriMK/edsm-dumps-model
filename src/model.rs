@@ -14,6 +14,8 @@ use std::borrow::Cow;
 use serde::de::DeserializeOwned;
 
 pub trait RootEntry: DeserializeOwned {
+    fn entry_id(&self) -> u64;
+
     fn pre_filter(s: &str) -> Cow<'_, str> {
         Cow::Borrowed(s)
     }

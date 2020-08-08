@@ -22,7 +22,11 @@ pub struct SystemWithCoordinates {
     pub date: DateTime<Utc>,
 }
 
-impl RootEntry for SystemWithCoordinates {}
+impl RootEntry for SystemWithCoordinates {
+    fn entry_id(&self) -> u64 {
+        self.id
+    }
+}
 
 impl System for SystemWithCoordinates {
     fn id(&self) -> u64 {
@@ -53,7 +57,11 @@ pub struct SystemWithoutCoordinates {
     pub date: DateTime<Utc>,
 }
 
-impl RootEntry for SystemWithoutCoordinates {}
+impl RootEntry for SystemWithoutCoordinates {
+    fn entry_id(&self) -> u64 {
+        self.id
+    }
+}
 
 impl System for SystemWithoutCoordinates {
     fn id(&self) -> u64 {

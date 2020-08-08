@@ -39,7 +39,11 @@ pub struct Station {
     pub update_time: UpdateTime,
 }
 
-impl RootEntry for Station {}
+impl RootEntry for Station {
+    fn entry_id(&self) -> u64 {
+        self.id
+    }
+}
 
 // Filed Type
 

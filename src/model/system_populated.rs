@@ -35,7 +35,11 @@ pub struct SystemPopulated {
     pub date: DateTime<Utc>,
 }
 
-impl RootEntry for SystemPopulated {}
+impl RootEntry for SystemPopulated {
+    fn entry_id(&self) -> u64 {
+        self.id
+    }
+}
 
 // Field Type
 

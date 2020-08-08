@@ -29,7 +29,11 @@ pub struct PowerPlay {
     pub date: DateTime<Utc>,
 }
 
-impl RootEntry for PowerPlay {}
+impl RootEntry for PowerPlay {
+    fn entry_id(&self) -> u64 {
+        self.id
+    }
+}
 
 // Field Type
 

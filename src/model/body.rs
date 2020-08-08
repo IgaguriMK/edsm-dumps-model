@@ -96,6 +96,10 @@ impl BodyT for Body {
 }
 
 impl RootEntry for Body {
+    fn entry_id(&self) -> u64 {
+        self.id()
+    }
+
     fn pre_filter(s: &str) -> Cow<'_, str> {
         let null_pos = s.find(r#""type":null"#);
         let first_compound = match (s.find(":{"), s.find('[')) {
