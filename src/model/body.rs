@@ -100,6 +100,10 @@ impl RootEntry for Body {
         self.id()
     }
 
+    fn type_name() -> &'static str {
+        "body"
+    }
+
     fn pre_filter(s: &str) -> Cow<'_, str> {
         let null_pos = s.find(r#""type":null"#);
         let first_compound = match (s.find(":{"), s.find('[')) {

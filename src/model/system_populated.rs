@@ -39,6 +39,10 @@ impl RootEntry for SystemPopulated {
     fn entry_id(&self) -> u64 {
         self.id
     }
+
+    fn type_name() -> &'static str {
+        "system_populated"
+    }
 }
 
 // Field Type

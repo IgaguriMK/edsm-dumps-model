@@ -12,9 +12,11 @@ mod dec;
 use std::borrow::Cow;
 
 use serde::de::DeserializeOwned;
+use serde::Serialize;
 
-pub trait RootEntry: DeserializeOwned {
+pub trait RootEntry: DeserializeOwned + Serialize {
     fn entry_id(&self) -> u64;
+    fn type_name() -> &'static str;
 
     fn pre_filter(s: &str) -> Cow<'_, str> {
         Cow::Borrowed(s)

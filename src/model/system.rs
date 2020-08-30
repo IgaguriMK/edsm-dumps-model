@@ -26,6 +26,10 @@ impl RootEntry for SystemWithCoordinates {
     fn entry_id(&self) -> u64 {
         self.id
     }
+
+    fn type_name() -> &'static str {
+        "system"
+    }
 }
 
 impl System for SystemWithCoordinates {
@@ -60,6 +64,10 @@ pub struct SystemWithoutCoordinates {
 impl RootEntry for SystemWithoutCoordinates {
     fn entry_id(&self) -> u64 {
         self.id
+    }
+
+    fn type_name() -> &'static str {
+        "system_without_coordinates"
     }
 }
 

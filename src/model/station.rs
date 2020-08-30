@@ -43,6 +43,10 @@ impl RootEntry for Station {
     fn entry_id(&self) -> u64 {
         self.id
     }
+
+    fn type_name() -> &'static str {
+        "station"
+    }
 }
 
 // Filed Type
