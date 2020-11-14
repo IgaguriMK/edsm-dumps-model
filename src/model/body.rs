@@ -104,6 +104,14 @@ impl RootEntry for Body {
         "body"
     }
 
+    fn time(&self) -> DateTime<Utc> {
+        match self {
+            Body::Planet(x) => x.update_time,
+            Body::Star(x) => x.update_time,
+            Body::Unknown(x) => x.update_time,
+        }
+    }
+
     fn pre_filter(s: &str) -> Cow<'_, str> {
         let null_pos = s.find(r#""type":null"#);
         let first_compound = match (s.find(":{"), s.find('[')) {

@@ -47,6 +47,24 @@ impl RootEntry for Station {
     fn type_name() -> &'static str {
         "station"
     }
+
+    fn time(&self) -> DateTime<Utc> {
+        let mut t = self.update_time.information;
+
+        if let Some(tt) = self.update_time.market {
+            t = t.max(tt);
+        }
+
+        if let Some(tt) = self.update_time.shipyard {
+            t = t.max(tt);
+        }
+
+        if let Some(tt) = self.update_time.outfitting {
+            t = t.max(tt);
+        }
+
+        t
+    }
 }
 
 // Filed Type

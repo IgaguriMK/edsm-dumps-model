@@ -30,6 +30,10 @@ impl RootEntry for SystemWithCoordinates {
     fn type_name() -> &'static str {
         "system"
     }
+
+    fn time(&self) -> DateTime<Utc> {
+        self.date
+    }
 }
 
 impl System for SystemWithCoordinates {
@@ -68,6 +72,10 @@ impl RootEntry for SystemWithoutCoordinates {
 
     fn type_name() -> &'static str {
         "system_without_coordinates"
+    }
+
+    fn time(&self) -> DateTime<Utc> {
+        self.date
     }
 }
 

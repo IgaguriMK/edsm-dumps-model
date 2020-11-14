@@ -37,6 +37,10 @@ impl RootEntry for PowerPlay {
     fn type_name() -> &'static str {
         "power_play"
     }
+
+    fn time(&self) -> DateTime<Utc> {
+        self.date
+    }
 }
 
 // Field Type

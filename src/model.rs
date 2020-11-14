@@ -11,12 +11,14 @@ mod dec;
 
 use std::borrow::Cow;
 
+use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-pub trait RootEntry: DeserializeOwned + Serialize {
+pub trait RootEntry: 'static + Send + Sync + DeserializeOwned + Serialize {
     fn entry_id(&self) -> u64;
     fn type_name() -> &'static str;
+    fn time(&self) -> DateTime<Utc>;
 
     fn pre_filter(s: &str) -> Cow<'_, str> {
         Cow::Borrowed(s)

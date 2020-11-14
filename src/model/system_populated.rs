@@ -43,6 +43,10 @@ impl RootEntry for SystemPopulated {
     fn type_name() -> &'static str {
         "system_populated"
     }
+
+    fn time(&self) -> DateTime<Utc> {
+        self.date
+    }
 }
 
 // Field Type
