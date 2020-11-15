@@ -11,15 +11,22 @@ mod dec;
 
 use std::borrow::Cow;
 
+use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde_json::from_slice;
 
 pub trait RootEntry: 'static + Send + Sync + DeserializeOwned + Serialize {
     fn entry_id(&self) -> u64;
     fn type_name() -> &'static str;
     fn time(&self) -> DateTime<Utc>;
 
+    fn parse_dump_json(bs: &[u8]) -> Result<Self> {
+        from_slice(bs).context("parsing entry")
+    }
+
+    // #[deprecated = "reason"]
     fn pre_filter(s: &str) -> Cow<'_, str> {
         Cow::Borrowed(s)
     }

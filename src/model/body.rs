@@ -2,8 +2,10 @@ use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::fmt;
 
+use anyhow::{Error, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::from_slice;
 use strum_macros::EnumIter;
 
 use super::dec::date_format;
@@ -109,6 +111,16 @@ impl RootEntry for Body {
             Body::Planet(x) => x.update_time,
             Body::Star(x) => x.update_time,
             Body::Unknown(x) => x.update_time,
+        }
+    }
+
+    fn parse_dump_json(bs: &[u8]) -> Result<Self> {
+        match from_slice(bs) {
+            Ok(v) => Ok(v),
+            Err(e) => match from_slice(bs) {
+                Ok(v) => Ok(Body::Unknown(v)),
+                Err(_) => Err(Error::new(e)),
+            },
         }
     }
 
