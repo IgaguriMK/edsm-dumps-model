@@ -7,7 +7,6 @@ use std::thread::Builder;
 
 use anyhow::{Context, Error};
 use crossbeam_channel::{bounded, Receiver, Sender};
-use serde_json::from_str;
 
 use detect_compression::DetectReader;
 
@@ -216,9 +215,8 @@ impl ChunkParser {
                 continue;
             }
 
-            let s = D::pre_filter(s);
-            let v =
-                from_str(s.as_ref()).with_context(|| format!("failed parse line: {}", self.buf))?;
+            let v = D::parse_dump_json(s.as_bytes())
+                .with_context(|| format!("failed parse line:\"{}\"", self.buf))?;
             values.push(v);
         }
         if values.len() > self.max_values_len {

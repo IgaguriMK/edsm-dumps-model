@@ -26,7 +26,7 @@ pub trait RootEntry: 'static + Send + Sync + DeserializeOwned + Serialize {
         from_slice(bs).context("parsing entry")
     }
 
-    // #[deprecated = "reason"]
+    #[deprecated = "use parse_dump_json()"]
     fn pre_filter(s: &str) -> Cow<'_, str> {
         Cow::Borrowed(s)
     }
