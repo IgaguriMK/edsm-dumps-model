@@ -54,6 +54,8 @@ pub enum Economy {
     Service,
     Terraforming,
     Tourism,
+    #[serde(rename = "Fleet Carrier")]
+    FleetCarrier,
 }
 
 display_via_serde!(Economy);
@@ -76,6 +78,8 @@ pub enum Government {
     Theocracy,
     #[serde(rename = "Workshop (Engineer)")]
     WorkshopEngineer,
+    #[serde(rename = "Fleet Carrier")]
+    FleetCarrier,
 }
 
 display_via_serde!(Government);
