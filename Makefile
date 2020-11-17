@@ -8,6 +8,8 @@ check: soft-clean
 	cargo test
 	cargo fmt -- --check
 	cargo clippy -- -D warnings
+	cargo audit
+	cargo outdated --exit-code 1
 
 .PHONY: soft-clean
 soft-clean:
