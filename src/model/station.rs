@@ -128,6 +128,9 @@ pub enum StationType {
     PlanetaryPort,
     #[serde(rename = "Planetary Outpost")]
     PlanetaryOutpost,
+    // Fleet Carrier
+    #[serde(rename = "Fleet Carrier")]
+    FleetCarrier,
 }
 
 display_via_serde!(StationType);
