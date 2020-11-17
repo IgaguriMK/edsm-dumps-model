@@ -20,8 +20,6 @@ fn parse_test() -> Result<()> {
 
     check::<PowerPlay>(&dumps_dir.join("powerPlay.json"))?;
     check::<Station>(&dumps_dir.join("stations.json"))?;
-    check::<SystemWithCoordinates>(&dumps_dir.join("systemsWithCoordinates.json"))?;
-    check::<SystemWithoutCoordinates>(&dumps_dir.join("systemsWithoutCoordinates.json"))?;
     check::<SystemPopulated>(&dumps_dir.join("systemsPopulated.json"))?;
 
     let p = dumps_dir.join("bodies.json");
@@ -30,6 +28,9 @@ fn parse_test() -> Result<()> {
     } else {
         check::<Body>(&dumps_dir.join("bodies7days.json"))?;
     }
+
+    check::<SystemWithCoordinates>(&dumps_dir.join("systemsWithCoordinates.json"))?;
+    check::<SystemWithoutCoordinates>(&dumps_dir.join("systemsWithoutCoordinates.json"))?;
 
     Ok(())
 }

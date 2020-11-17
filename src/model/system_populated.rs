@@ -58,9 +58,9 @@ pub struct FactionInPopulated {
     pub id: u64,
     // Attributes
     pub active_states: Vec<bgs::ActiveState>,
-    pub allegiance: bgs::Allegiance,
-    pub government: bgs::Government,
-    pub happiness: bgs::Happiness,
+    pub allegiance: Option<bgs::Allegiance>,
+    pub government: Option<bgs::Government>,
+    pub happiness: Option<bgs::Happiness>,
     pub influence: f32,
     pub is_player: bool,
     pub name: String,
@@ -78,11 +78,11 @@ pub struct FactionInPopulated {
 pub struct StationInPopulated {
     pub id: u64,
     // Attributes
-    pub allegiance: bgs::Allegiance,
+    pub allegiance: Option<bgs::Allegiance>,
     pub body: Option<station::StationBody>,
     pub controlling_faction: Option<bgs::ControllingFaction>,
     pub distance_to_arrival: Option<f32>,
-    pub economy: bgs::Economy,
+    pub economy: Option<bgs::Economy>,
     pub government: Option<bgs::Government>,
     pub have_market: bool,
     pub have_outfitting: bool,
