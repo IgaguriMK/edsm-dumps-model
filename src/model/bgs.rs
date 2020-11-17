@@ -39,6 +39,7 @@ pub struct ControllingFaction {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Economy {
+    None,
     Agriculture,
     Colony,
     Extraction,
@@ -46,7 +47,6 @@ pub enum Economy {
     HighTech,
     Industrial,
     Military,
-    None,
     Prison,
     Refinery,
     Repair,
@@ -63,6 +63,7 @@ display_via_serde!(Economy);
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
 pub enum Government {
+    None,
     Anarchy,
     Communism,
     Confederacy,
