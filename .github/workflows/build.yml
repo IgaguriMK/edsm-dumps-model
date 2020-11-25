@@ -2,7 +2,7 @@ on: [push,pull_request]
 name: edsm-dumps-model
 jobs:
   build:
-    name: test
+    name: Build & Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -32,3 +32,25 @@ jobs:
         run: cargo test
         env:
           RUST_BACKTRACE: 1
+  clippy:
+    name: Check code
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout Sources
+        uses: actions/checkout@v2
+      -
+        name: Install toolchain for clippy
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+          override: true
+      -
+        name: Check code format
+        run: cargo fmt -- --check
+      -
+        name: Check by clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
