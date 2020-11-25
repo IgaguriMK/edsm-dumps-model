@@ -1,5 +1,5 @@
 on: [push,pull_request]
-name: edsm-dumps-model
+name: dev tests
 jobs:
   build:
     name: Build & Test
