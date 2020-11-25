@@ -1,0 +1,36 @@
+on: [push,pull_request]
+name: edsm-dumps-model
+jobs:
+  build:
+    name: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - 1.40.0
+        os: [ubuntu-20.04]
+        include:
+          - os: macos-latest
+            rust: stable
+          - os: windows-latest
+            rust: stable
+    steps:
+      -
+        name: Checkout Sources
+        uses: actions/checkout@v2
+      -
+        name: Install ${{ matrix.rust }} toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      -
+        name: cargo build (debug; default features)
+        run: cargo build
+      -
+        name: cargo test (debug; default features)
+        run: cargo test
+        env:
+          RUST_BACKTRACE: 1
