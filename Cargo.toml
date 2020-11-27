@@ -1,6 +1,6 @@
 [package]
 name = "edsm-dumps-model"
-version = "0.6.1-alpha"
+version = "0.6.1"
 authors = ["Igaguri <igagurimk@gmail.com>"]
 edition = "2018"
 
