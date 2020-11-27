@@ -6,7 +6,7 @@ use anyhow::{Error, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::from_slice;
-use strum_macros::EnumIter;
+use strum::EnumIter;
 
 use super::dec::date_format;
 use super::RootEntry;

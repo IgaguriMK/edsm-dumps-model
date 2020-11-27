@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use strum_macros::EnumIter;
+use strum::EnumIter;
 
 use super::bgs;
 use super::dec::date_format;
