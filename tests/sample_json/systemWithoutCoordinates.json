@@ -1,0 +1,10 @@
+[
+    {"date":"2015-06-03 06:58:36","id":46613,"id64":1275215721525,"name":"Granou CB-X f1-2375"},
+    {"date":"2015-06-03 06:58:36","estimatedCoordinates":{"precision":35,"x":-5125,"y":-1565,"z":18715},"id":46620,"id64":16293057831282,"name":"Granou HB-G c13-59"},
+    {"date":"2015-06-12 07:00:47","estimatedCoordinates":{"precision":35,"x":-565,"y":275,"z":-7085},"id":49483,"id64":357791141194,"name":"Myeade PM-L c8-1"},
+    {"date":"2015-06-23 06:42:04","estimatedCoordinates":{"precision":17,"x":865,"y":5,"z":1625},"id":53155,"id64":13876636756017,"name":"Blu Thua QR-P b5-6"},
+    {"date":"2015-10-09 13:48:33","estimatedCoordinates":{"precision":9,"x":-2140,"y":0,"z":6260},"id":103921,"id64":5137318043360,"name":"Byeia Eurk WF-U a85-0"},
+    {"date":"2015-11-03 14:22:22","estimatedCoordinates":{"precision":9,"x":0,"y":30,"z":5660},"id":138319,"id64":5367099186432,"name":"Byeia Euq UN-W a29-0"},
+    {"date":"2015-12-10 05:49:30","estimatedCoordinates":{"precision":9,"x":-570,"y":-40,"z":0},"id":237292,"id64":58082453113680,"name":"Synuefai PB-T a99-3"},
+    {"date":"2020-11-17 20:51:08","id":58685701,"id64":null,"name":"HIP 85444"}
+]

@@ -1,0 +1,56 @@
+on: [push,pull_request]
+name: dev tests
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - 1.40.0
+        os: [ubuntu-latest]
+        include:
+          - os: windows-latest
+            rust: stable
+    steps:
+      -
+        name: Checkout Sources
+        uses: actions/checkout@v2
+      -
+        name: Install ${{ matrix.rust }} toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      -
+        name: cargo build (debug; default features)
+        run: cargo build
+      -
+        name: cargo test (debug; default features)
+        run: cargo test
+        env:
+          RUST_BACKTRACE: 1
+  clippy:
+    name: Check code
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout Sources
+        uses: actions/checkout@v2
+      -
+        name: Install toolchain for clippy
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+          override: true
+      -
+        name: Check code format
+        run: cargo fmt -- --check
+      -
+        name: Check by clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
