@@ -220,38 +220,63 @@ impl From<BodyS> for Body {
 pub struct Planet {
     pub id: u64,
     // Attributes
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub arg_of_periapsis: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub atmosphere_composition: Option<AtmosphereComposition>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub atmosphere_type: Option<AtmosphereType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub axial_tilt: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub belts: Option<Vec<Belt>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub body_id: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub discovery: Option<Discovery>,
     pub distance_to_arrival: u64,
     pub earth_masses: f32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gravity: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub is_landable: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub materials: Option<Materials>,
     pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_eccentricity: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_inclination: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_period: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parents: Option<Vec<Parent>>,
     pub radius: f32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reserve_level: Option<ReserveLevel>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rings: Option<Vec<Ring>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rotational_period: Option<f32>,
     pub rotational_period_tidally_locked: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub semi_major_axis: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub solid_composition: Option<SolidComposition>,
     pub sub_type: PlanetSubType,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub surface_pressure: Option<f32>,
     pub surface_temperature: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id64: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub terraforming_state: Option<TerraformingState>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub volcanism_type: Option<VolcanismType>,
     // Metadata
     #[serde(with = "date_format")]
@@ -288,35 +313,55 @@ impl BodyT for Planet {
 pub struct Star {
     pub id: u64,
     // Attributes
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub absolute_magnitude: Option<f32>,
     pub age: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub arg_of_periapsis: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub axial_tilt: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub belts: Option<Vec<Belt>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub body_id: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub discovery: Option<Discovery>,
     pub distance_to_arrival: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub is_main_star: bool,
     pub is_scoopable: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub luminosity: Option<Luminosity>,
     pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_eccentricity: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_inclination: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_period: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parents: Option<Vec<Parent>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reserve_level: Option<ReserveLevel>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rings: Option<Vec<Ring>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rotational_period: Option<f32>,
     pub rotational_period_tidally_locked: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub semi_major_axis: Option<f32>,
     pub solar_masses: f32,
     pub solar_radius: f32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub spectral_class: Option<SpectralClass>,
     pub sub_type: StarSubType,
     pub surface_temperature: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id64: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_name: Option<String>,
     // Metadata
     #[serde(with = "date_format")]
@@ -352,10 +397,14 @@ impl BodyT for Star {
 pub struct Unknown {
     pub id: u64,
     // Attributes
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id64: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_name: Option<String>,
     // Metadata
     #[serde(with = "date_format")]
@@ -624,6 +673,7 @@ pub struct Belt {
     pub name: String,
     pub outer_radius: f32,
     #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<AsteroidType>,
 }
 
@@ -831,6 +881,7 @@ pub struct Ring {
     pub name: String,
     pub outer_radius: f32,
     #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<AsteroidType>,
 }
 
