@@ -50,7 +50,7 @@ fn try_parse<T: RootEntry>(bs: &[u8]) -> Result<()> {
 
     for line in r.lines() {
         let line = line?;
-        let line = line.trim();
+        let line = line.trim().trim_end_matches(',');
 
         if line == "[" {
             continue;
@@ -59,7 +59,7 @@ fn try_parse<T: RootEntry>(bs: &[u8]) -> Result<()> {
             break;
         }
 
-        let _ = T::parse_dump_json(line.as_bytes());
+        let _ = T::parse_dump_json(line.as_bytes())?;
     }
 
     Ok(())

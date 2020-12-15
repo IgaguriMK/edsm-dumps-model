@@ -22,6 +22,8 @@ pub struct Station {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub body: Option<StationBody>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub commodities: Option<Vec<Commodity>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub controlling_faction: Option<bgs::ControllingFaction>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub distance_to_arrival: Option<f32>,
@@ -37,7 +39,11 @@ pub struct Station {
     pub name: String,
     pub other_services: Vec<OtherService>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub outfitting: Option<Vec<Outfitting>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub second_economy: Option<bgs::Economy>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ships: Option<Vec<Ship>>,
     pub system_id: u64,
     pub system_id64: u64,
     pub system_name: String,
@@ -62,6 +68,20 @@ impl RootEntry for Station {
 }
 
 // Filed Type
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Commodity {
+    id: String,
+    name: String,
+    // Attributes
+    buy_price: u64,
+    demand: u64,
+    sell_price: u64,
+    stock: u64,
+    stock_bracket: u64,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
 #[serde(deny_unknown_fields)]
@@ -89,6 +109,22 @@ pub enum OtherService {
 }
 
 display_via_serde!(OtherService);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Outfitting {
+    id: String,
+    name: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(deny_unknown_fields)]
+pub struct Ship {
+    id: u64,
+    name: String,
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
