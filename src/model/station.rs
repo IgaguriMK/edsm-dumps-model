@@ -175,11 +175,18 @@ pub struct UpdateTime {
     pub information: DateTime<Utc>,
     #[serde(with = "date_format_opt")]
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default = "option_none")]
     pub market: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default = "option_none")]
     pub outfitting: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default = "option_none")]
     pub shipyard: Option<DateTime<Utc>>,
+}
+
+fn option_none<T>() -> Option<T> {
+    None
 }
