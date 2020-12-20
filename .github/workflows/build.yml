@@ -54,7 +54,7 @@ jobs:
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-  minimal_versions:
+  min_max_versions:
     name: Check build with minimal dependencies' versions
     runs-on: ubuntu-latest
     steps:
@@ -70,6 +70,14 @@ jobs:
       -
         name: Update Cargo.lock with minimal versions
         run: cargo +nightly update -Z minimal-versions
+      -
+        name: Run test
+        run: cargo test
+        env:
+          RUST_BACKTRACE: 1
+      -
+        name: Update Cargo.lock with maximum versions
+        run: cargo update
       -
         name: Run test
         run: cargo test
