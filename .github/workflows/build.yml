@@ -54,3 +54,24 @@ jobs:
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+  minimal_versions:
+    name: Check build with minimal dependencies' versions
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout Sources
+        uses: actions/checkout@v2
+      -
+        name: Install toolchain for clippy
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      -
+        name: Update Cargo.lock with minimal versions
+        run: cargo +nightly update -Z minimal-versions
+      -
+        name: Run test
+        run: cargo test
+        env:
+          RUST_BACKTRACE: 1
