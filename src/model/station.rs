@@ -44,9 +44,9 @@ pub struct Station {
     pub second_economy: Option<bgs::Economy>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ships: Option<Vec<Ship>>,
-    pub system_id: u64,
-    pub system_id64: u64,
-    pub system_name: String,
+    pub system_id: Option<u64>,
+    pub system_id64: Option<u64>,
+    pub system_name: Option<String>,
     #[serde(rename = "type")]
     pub typ: StationType,
     // Metadata
