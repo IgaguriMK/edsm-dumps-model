@@ -19,35 +19,53 @@ use crate::display_via_serde;
 pub trait BodyT {
     fn id(&self) -> u64;
     fn id64(&self) -> Option<u64>;
+    fn body_id(&self) -> Option<u64>;
     fn system_id(&self) -> Option<u64>;
     fn system_id64(&self) -> Option<u64>;
     fn update_time(&self) -> DateTime<Utc>;
     fn name(&self) -> &str;
     fn system_name(&self) -> Option<&str>;
+
+    fn axial_tilt(&self) -> Option<f32>;
+    fn distance_to_arrival(&self) -> Option<u64>;
+    fn orbital_eccentricity(&self) -> Option<f32>;
+    fn orbital_inclination(&self) -> Option<f32>;
+    fn orbital_period(&self) -> Option<f32>;
+    fn parents(&self) -> Option<&[Parent]>;
+    fn rotational_period(&self) -> Option<f32>;
+    fn rotational_period_tidally_locked(&self) -> Option<bool>;
+    fn semi_major_axis(&self) -> Option<f32>;
+    fn surface_temperature(&self) -> Option<u64>;
+}
+
+macro_rules! deref_impl {
+    ($n:ident, $t:ty) => {
+        fn $n(&self) -> $t {
+            (*self).$n()
+        }
+    };
 }
 
 impl<T: BodyT> BodyT for &T {
-    fn id(&self) -> u64 {
-        (*self).id()
-    }
-    fn id64(&self) -> Option<u64> {
-        (*self).id64()
-    }
-    fn system_id(&self) -> Option<u64> {
-        (*self).system_id()
-    }
-    fn system_id64(&self) -> Option<u64> {
-        (*self).system_id64()
-    }
-    fn update_time(&self) -> DateTime<Utc> {
-        (*self).update_time()
-    }
-    fn name(&self) -> &str {
-        (*self).name()
-    }
-    fn system_name(&self) -> Option<&str> {
-        (*self).system_name()
-    }
+    deref_impl!(id, u64);
+    deref_impl!(id64, Option<u64>);
+    deref_impl!(body_id, Option<u64>);
+    deref_impl!(system_id, Option<u64>);
+    deref_impl!(system_id64, Option<u64>);
+    deref_impl!(update_time, DateTime<Utc>);
+    deref_impl!(name, &str);
+    deref_impl!(system_name, Option<&str>);
+
+    deref_impl!(axial_tilt, Option<f32>);
+    deref_impl!(distance_to_arrival, Option<u64>);
+    deref_impl!(orbital_eccentricity, Option<f32>);
+    deref_impl!(orbital_inclination, Option<f32>);
+    deref_impl!(orbital_period, Option<f32>);
+    deref_impl!(parents, Option<&[Parent]>);
+    deref_impl!(rotational_period, Option<f32>);
+    deref_impl!(rotational_period_tidally_locked, Option<bool>);
+    deref_impl!(semi_major_axis, Option<f32>);
+    deref_impl!(surface_temperature, Option<u64>);
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -65,9 +83,9 @@ macro_rules! body_common_field {
     ($f:ident, $ty:ty ) => {
         fn $f(&self) -> $ty {
             match self {
-                Body::Planet(x) => x.$f,
-                Body::Star(x) => x.$f,
-                Body::Unknown(x) => x.$f,
+                Body::Planet(x) => x.$f(),
+                Body::Star(x) => x.$f(),
+                Body::Unknown(x) => x.$f(),
             }
         }
     };
@@ -76,25 +94,23 @@ macro_rules! body_common_field {
 impl BodyT for Body {
     body_common_field!(id, u64);
     body_common_field!(id64, Option<u64>);
+    body_common_field!(body_id, Option<u64>);
     body_common_field!(system_id, Option<u64>);
     body_common_field!(system_id64, Option<u64>);
     body_common_field!(update_time, DateTime<Utc>);
+    body_common_field!(name, &str);
+    body_common_field!(system_name, Option<&str>);
 
-    fn name(&self) -> &str {
-        match self {
-            Body::Planet(x) => &x.name,
-            Body::Star(x) => &x.name,
-            Body::Unknown(x) => &x.name,
-        }
-    }
-
-    fn system_name(&self) -> Option<&str> {
-        match self {
-            Body::Planet(x) => x.system_name.as_deref(),
-            Body::Star(x) => x.system_name.as_deref(),
-            Body::Unknown(x) => x.system_name.as_deref(),
-        }
-    }
+    body_common_field!(axial_tilt, Option<f32>);
+    body_common_field!(distance_to_arrival, Option<u64>);
+    body_common_field!(orbital_eccentricity, Option<f32>);
+    body_common_field!(orbital_inclination, Option<f32>);
+    body_common_field!(orbital_period, Option<f32>);
+    body_common_field!(parents, Option<&[Parent]>);
+    body_common_field!(rotational_period, Option<f32>);
+    body_common_field!(rotational_period_tidally_locked, Option<bool>);
+    body_common_field!(semi_major_axis, Option<f32>);
+    body_common_field!(surface_temperature, Option<u64>);
 }
 
 impl RootEntry for Body {
@@ -162,9 +178,9 @@ macro_rules! body_s_common_field {
     ($f:ident, $ty:ty ) => {
         fn $f(&self) -> $ty {
             match self {
-                BodyS::Planet(x) => x.$f,
-                BodyS::Star(x) => x.$f,
-                BodyS::Unknown(x) => x.$f,
+                BodyS::Planet(x) => x.$f(),
+                BodyS::Star(x) => x.$f(),
+                BodyS::Unknown(x) => x.$f(),
             }
         }
     };
@@ -173,25 +189,23 @@ macro_rules! body_s_common_field {
 impl BodyT for BodyS {
     body_s_common_field!(id, u64);
     body_s_common_field!(id64, Option<u64>);
+    body_s_common_field!(body_id, Option<u64>);
     body_s_common_field!(system_id, Option<u64>);
     body_s_common_field!(system_id64, Option<u64>);
     body_s_common_field!(update_time, DateTime<Utc>);
+    body_s_common_field!(name, &str);
+    body_s_common_field!(system_name, Option<&str>);
 
-    fn name(&self) -> &str {
-        match self {
-            BodyS::Planet(x) => &x.name,
-            BodyS::Star(x) => &x.name,
-            BodyS::Unknown(x) => &x.name,
-        }
-    }
-
-    fn system_name(&self) -> Option<&str> {
-        match self {
-            BodyS::Planet(x) => x.system_name.as_deref(),
-            BodyS::Star(x) => x.system_name.as_deref(),
-            BodyS::Unknown(x) => x.system_name.as_deref(),
-        }
-    }
+    body_s_common_field!(axial_tilt, Option<f32>);
+    body_s_common_field!(distance_to_arrival, Option<u64>);
+    body_s_common_field!(orbital_eccentricity, Option<f32>);
+    body_s_common_field!(orbital_inclination, Option<f32>);
+    body_s_common_field!(orbital_period, Option<f32>);
+    body_s_common_field!(parents, Option<&[Parent]>);
+    body_s_common_field!(rotational_period, Option<f32>);
+    body_s_common_field!(rotational_period_tidally_locked, Option<bool>);
+    body_s_common_field!(semi_major_axis, Option<f32>);
+    body_s_common_field!(surface_temperature, Option<u64>);
 }
 
 impl From<Body> for BodyS {
@@ -212,6 +226,38 @@ impl From<BodyS> for Body {
             BodyS::Unknown(x) => Body::Unknown(x),
         }
     }
+}
+
+macro_rules! body_t_impl {
+    ($n:ident, $t:ty) => {
+        fn $n(&self) -> $t {
+            self.$n
+        }
+    };
+}
+
+macro_rules! body_t_impl_some {
+    ($n:ident, $t:ty) => {
+        fn $n(&self) -> $t {
+            Some(self.$n)
+        }
+    };
+}
+
+macro_rules! body_t_impl_none {
+    ($n:ident, $t:ty) => {
+        fn $n(&self) -> $t {
+            None
+        }
+    };
+}
+
+macro_rules! body_t_impl_deref {
+    ($n:ident, $t:ty) => {
+        fn $n(&self) -> $t {
+            self.$n.as_deref()
+        }
+    };
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -284,27 +330,27 @@ pub struct Planet {
 }
 
 impl BodyT for Planet {
-    fn id(&self) -> u64 {
-        self.id
-    }
-    fn id64(&self) -> Option<u64> {
-        self.id64
-    }
-    fn system_id(&self) -> Option<u64> {
-        self.system_id
-    }
-    fn system_id64(&self) -> Option<u64> {
-        self.system_id64
-    }
-    fn update_time(&self) -> DateTime<Utc> {
-        self.update_time
-    }
+    body_t_impl!(id, u64);
+    body_t_impl!(id64, Option<u64>);
+    body_t_impl!(body_id, Option<u64>);
+    body_t_impl!(system_id, Option<u64>);
+    body_t_impl!(system_id64, Option<u64>);
+    body_t_impl!(update_time, DateTime<Utc>);
     fn name(&self) -> &str {
-        &self.name
+        self.name.as_str()
     }
-    fn system_name(&self) -> Option<&str> {
-        self.system_name.as_deref()
-    }
+    body_t_impl_deref!(system_name, Option<&str>);
+
+    body_t_impl!(axial_tilt, Option<f32>);
+    body_t_impl_some!(distance_to_arrival, Option<u64>);
+    body_t_impl!(orbital_eccentricity, Option<f32>);
+    body_t_impl!(orbital_inclination, Option<f32>);
+    body_t_impl!(orbital_period, Option<f32>);
+    body_t_impl_deref!(parents, Option<&[Parent]>);
+    body_t_impl!(rotational_period, Option<f32>);
+    body_t_impl_some!(rotational_period_tidally_locked, Option<bool>);
+    body_t_impl!(semi_major_axis, Option<f32>);
+    body_t_impl_some!(surface_temperature, Option<u64>);
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -369,27 +415,27 @@ pub struct Star {
 }
 
 impl BodyT for Star {
-    fn id(&self) -> u64 {
-        self.id
-    }
-    fn id64(&self) -> Option<u64> {
-        self.id64
-    }
-    fn system_id(&self) -> Option<u64> {
-        self.system_id
-    }
-    fn system_id64(&self) -> Option<u64> {
-        self.system_id64
-    }
-    fn update_time(&self) -> DateTime<Utc> {
-        self.update_time
-    }
+    body_t_impl!(id, u64);
+    body_t_impl!(id64, Option<u64>);
+    body_t_impl!(body_id, Option<u64>);
+    body_t_impl!(system_id, Option<u64>);
+    body_t_impl!(system_id64, Option<u64>);
+    body_t_impl!(update_time, DateTime<Utc>);
     fn name(&self) -> &str {
-        &self.name
+        self.name.as_str()
     }
-    fn system_name(&self) -> Option<&str> {
-        self.system_name.as_deref()
-    }
+    body_t_impl_deref!(system_name, Option<&str>);
+
+    body_t_impl!(axial_tilt, Option<f32>);
+    body_t_impl_some!(distance_to_arrival, Option<u64>);
+    body_t_impl!(orbital_eccentricity, Option<f32>);
+    body_t_impl!(orbital_inclination, Option<f32>);
+    body_t_impl!(orbital_period, Option<f32>);
+    body_t_impl_deref!(parents, Option<&[Parent]>);
+    body_t_impl!(rotational_period, Option<f32>);
+    body_t_impl_some!(rotational_period_tidally_locked, Option<bool>);
+    body_t_impl!(semi_major_axis, Option<f32>);
+    body_t_impl_some!(surface_temperature, Option<u64>);
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -412,27 +458,27 @@ pub struct Unknown {
 }
 
 impl BodyT for Unknown {
-    fn id(&self) -> u64 {
-        self.id
-    }
-    fn id64(&self) -> Option<u64> {
-        self.id64
-    }
-    fn system_id(&self) -> Option<u64> {
-        self.system_id
-    }
-    fn system_id64(&self) -> Option<u64> {
-        self.system_id64
-    }
-    fn update_time(&self) -> DateTime<Utc> {
-        self.update_time
-    }
+    body_t_impl!(id, u64);
+    body_t_impl!(id64, Option<u64>);
+    body_t_impl_none!(body_id, Option<u64>);
+    body_t_impl!(system_id, Option<u64>);
+    body_t_impl!(system_id64, Option<u64>);
+    body_t_impl!(update_time, DateTime<Utc>);
     fn name(&self) -> &str {
-        &self.name
+        self.name.as_str()
     }
-    fn system_name(&self) -> Option<&str> {
-        self.system_name.as_deref()
-    }
+    body_t_impl_deref!(system_name, Option<&str>);
+
+    body_t_impl_none!(axial_tilt, Option<f32>);
+    body_t_impl_none!(distance_to_arrival, Option<u64>);
+    body_t_impl_none!(orbital_eccentricity, Option<f32>);
+    body_t_impl_none!(orbital_inclination, Option<f32>);
+    body_t_impl_none!(orbital_period, Option<f32>);
+    body_t_impl_none!(parents, Option<&[Parent]>);
+    body_t_impl_none!(rotational_period, Option<f32>);
+    body_t_impl_none!(rotational_period_tidally_locked, Option<bool>);
+    body_t_impl_none!(semi_major_axis, Option<f32>);
+    body_t_impl_none!(surface_temperature, Option<u64>);
 }
 
 // Field Type
