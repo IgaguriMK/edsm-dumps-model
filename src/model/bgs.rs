@@ -46,7 +46,10 @@ pub enum Economy {
     None,
     Agriculture,
     Colony,
+    Damaged,
     Extraction,
+    #[serde(rename = "Fleet Carrier")]
+    FleetCarrier,
     #[serde(rename = "High Tech")]
     HighTech,
     Industrial,
@@ -58,8 +61,6 @@ pub enum Economy {
     Service,
     Terraforming,
     Tourism,
-    #[serde(rename = "Fleet Carrier")]
-    FleetCarrier,
 }
 
 display_via_serde!(Economy);
