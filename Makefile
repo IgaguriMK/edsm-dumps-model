@@ -9,7 +9,11 @@ check: soft-clean
 	cargo fmt -- --check
 	cargo clippy -- -D warnings
 	cargo audit
-	cargo outdated --exit-code 1
+
+.PHONY: min-check
+min-check:
+	cargo +nightly update -Z minimal-versions
+	cargo check
 
 .PHONY: soft-clean
 soft-clean:

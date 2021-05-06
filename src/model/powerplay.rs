@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
+use variant_count::VariantCount;
 
 use super::bgs;
 use super::dec::date_format;
@@ -48,7 +49,7 @@ impl RootEntry for PowerPlay {
 
 // Field Type
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum Power {
     #[serde(rename = "A. Lavigny-Duval")]
@@ -77,7 +78,7 @@ pub enum Power {
 
 display_via_serde!(Power);
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum PowerState {
     Contested,

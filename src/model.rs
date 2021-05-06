@@ -1,3 +1,5 @@
+#![allow(clippy::upper_case_acronyms)]
+
 pub mod bgs;
 pub mod body;
 pub mod powerplay;
