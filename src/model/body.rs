@@ -7,6 +7,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::from_slice;
 use strum::EnumIter;
+use variant_count::VariantCount;
 
 use super::dec::date_format;
 use super::RootEntry;
@@ -484,7 +485,18 @@ impl BodyT for Unknown {
 // Field Type
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum AsteroidType {
@@ -508,7 +520,18 @@ impl AtmosphereComposition {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 pub enum AtmosphereCompositionKey {
     Ammonia,
@@ -535,7 +558,18 @@ impl AtmosphereCompositionKey {
 display_via_serde!(AtmosphereCompositionKey);
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 pub enum AtmosphereType {
     /* normal */
@@ -733,7 +767,18 @@ pub struct Discovery {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum Luminosity {
@@ -782,7 +827,18 @@ impl Materials {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 pub enum MaterialsKey {
     Antimony,
@@ -827,7 +883,18 @@ pub enum Parent {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
@@ -901,7 +968,18 @@ impl PlanetSubType {
 display_via_serde!(PlanetSubType);
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum ReserveLevel {
@@ -944,7 +1022,18 @@ pub struct SolidComposition {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 pub enum StarClass {
     OTypeStars,
@@ -1013,7 +1102,18 @@ impl fmt::Display for StarClass {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum SpectralClass {
@@ -1154,7 +1254,18 @@ impl SpectralClass {
 display_via_serde!(SpectralClass);
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
@@ -1360,7 +1471,18 @@ impl StarSubType {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum TerraformingState {
@@ -1379,7 +1501,18 @@ impl TerraformingState {
 display_via_serde!(TerraformingState);
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
 )]
 #[serde(deny_unknown_fields)]
 pub enum VolcanismType {

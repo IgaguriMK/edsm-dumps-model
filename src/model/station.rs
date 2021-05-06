@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
+use variant_count::VariantCount;
 
 use super::bgs;
 use super::dec::{date_format, date_format_opt};
@@ -83,7 +84,7 @@ pub struct Commodity {
     stock_bracket: u64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum OtherService {
     #[serde(rename = "Black Market")]
@@ -139,7 +140,7 @@ pub struct StationBody {
     pub name: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum StationType {
     // Orbital Large

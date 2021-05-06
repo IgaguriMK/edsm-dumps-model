@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
+use variant_count::VariantCount;
 
 use super::util::DisplayViaSerde;
 use crate::display_via_serde;
@@ -11,7 +12,7 @@ pub struct ActiveState {
     pub state: State,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum Allegiance {
     Alliance,
@@ -40,7 +41,7 @@ pub struct ControllingFaction {
     pub name: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum Economy {
     None,
@@ -65,7 +66,7 @@ pub enum Economy {
 
 display_via_serde!(Economy);
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum Government {
     None,
@@ -90,7 +91,19 @@ pub enum Government {
 
 display_via_serde!(Government);
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Happiness {
     Despondent,
@@ -119,7 +132,19 @@ pub struct RecoveringState {
     pub trend: u8,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    VariantCount,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Security {
     Anarchy,
@@ -130,7 +155,7 @@ pub enum Security {
 
 display_via_serde!(Security);
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
 #[serde(deny_unknown_fields)]
 pub enum State {
     Blight,
