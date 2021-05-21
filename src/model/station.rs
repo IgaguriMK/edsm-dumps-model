@@ -49,7 +49,7 @@ pub struct Station {
     pub system_id64: Option<u64>,
     pub system_name: Option<String>,
     #[serde(rename = "type")]
-    pub typ: StationType,
+    pub typ: Option<StationType>,
     // Metadata
     pub update_time: UpdateTime,
 }
@@ -74,7 +74,7 @@ impl RootEntry for Station {
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Commodity {
-    id: String,
+    id: Option<String>,
     name: String,
     // Attributes
     buy_price: u64,

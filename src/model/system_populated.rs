@@ -112,7 +112,7 @@ pub struct StationInPopulated {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub second_economy: Option<bgs::Economy>,
     #[serde(rename = "type")]
-    pub st_type: station::StationType,
+    pub st_type: Option<station::StationType>,
     // Metadata
     pub update_time: station::UpdateTime,
 }
