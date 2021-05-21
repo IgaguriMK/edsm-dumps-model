@@ -50,6 +50,5 @@
     {"allegiance":"Federation","coords":{"x":69.625,"y":-10.875,"z":-8.78125},"date":"2020-11-15 10:04:23","government":"Corporate","id":4537,"id64":13865899271585,"name":"Chuelche","power":"Zemina Torval","powerState":"Contested","state":"Boom"},
     {"allegiance":"Alliance","coords":{"x":-13.59375,"y":69.53125,"z":63.3125},"date":"2020-12-23 10:37:12","government":"Corporate","id":3159,"id64":2518738291059,"name":"Tepehuacoc","power":"Edmund Mahon","powerState":"Exploited","state":"Terrorist Attack"},
     {"allegiance":"Federation","coords":{"x":-12.625,"y":0,"z":-3.40625},"date":"2020-12-24 22:05:28","government":"Confederacy","id":12936,"id64":22660918617513,"name":"Kruger 60","power":"Zachary Hudson","powerState":"Exploited","state":"Boom"},
-    {"allegiance":"Federation","coords":{"x":53.96875,"y":2.3125,"z":-26.9375},"date":"2020-12-24 23:17:20","government":"Democracy","id":3000,"id64":908553360074,"name":"LTT 3007","power":"Zemina Torval","powerState":"Exploited","state":"Lockdown"},
-    {"allegiance":"Pilots Federation","coords":{"x":-23.9375,"y":40.875,"z":-1.34375},"date":"2020-12-01 23:53:29","government":"Democracy","id":14,"id64":1144348739947,"name":"Asellus Primus","power":"Edmund Mahon","powerState":"Exploited","state":"None"}
+    {"allegiance":"Federation","coords":{"x":53.96875,"y":2.3125,"z":-26.9375},"date":"2020-12-24 23:17:20","government":"Democracy","id":3000,"id64":908553360074,"name":"LTT 3007","power":"Zemina Torval","powerState":"Exploited","state":"Lockdown"}
 ]
