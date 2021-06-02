@@ -161,6 +161,8 @@ pub enum StationType {
     PlanetaryPort,
     #[serde(rename = "Planetary Outpost")]
     PlanetaryOutpost,
+    #[serde(rename = "Odyssey Settlement")]
+    OdysseySettlement,
     // Fleet Carrier
     #[serde(rename = "Fleet Carrier")]
     FleetCarrier,
