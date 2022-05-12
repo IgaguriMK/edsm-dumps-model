@@ -9,6 +9,7 @@ use super::RootEntry;
 // Main Type
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct SystemWithCoordinates {
@@ -20,6 +21,7 @@ pub struct SystemWithCoordinates {
     pub name: String,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub date: DateTime<Utc>,
 }
 
@@ -53,6 +55,7 @@ impl System for SystemWithCoordinates {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct SystemWithoutCoordinates {
@@ -65,6 +68,7 @@ pub struct SystemWithoutCoordinates {
     pub name: String,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub date: DateTime<Utc>,
 }
 
@@ -107,6 +111,7 @@ pub trait System {
 // Field Type
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Coords {
@@ -221,6 +226,7 @@ impl SubAssign for Coords {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct EstimatedCoords {

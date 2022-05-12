@@ -6,6 +6,7 @@ use super::util::DisplayViaSerde;
 use crate::display_via_serde;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct ActiveState {
@@ -13,6 +14,7 @@ pub struct ActiveState {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Allegiance {
     Alliance,
@@ -26,6 +28,7 @@ pub enum Allegiance {
 display_via_serde!(Allegiance);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct ControllingFaction {
@@ -42,6 +45,7 @@ pub struct ControllingFaction {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Economy {
     None,
@@ -67,6 +71,7 @@ pub enum Economy {
 display_via_serde!(Economy);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Government {
     None,
@@ -104,6 +109,7 @@ display_via_serde!(Government);
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Happiness {
     Despondent,
@@ -117,6 +123,7 @@ pub enum Happiness {
 display_via_serde!(Happiness);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct PendingState {
@@ -125,6 +132,7 @@ pub struct PendingState {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct RecoveringState {
@@ -145,6 +153,7 @@ pub struct RecoveringState {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Security {
     Anarchy,
@@ -156,6 +165,7 @@ pub enum Security {
 display_via_serde!(Security);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum State {
     Blight,

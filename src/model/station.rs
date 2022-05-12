@@ -13,6 +13,7 @@ use crate::display_via_serde;
 // Main Type
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Station {
@@ -71,6 +72,7 @@ impl RootEntry for Station {
 // Filed Type
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Commodity {
@@ -85,6 +87,7 @@ pub struct Commodity {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum OtherService {
     #[serde(rename = "Black Market")]
@@ -112,6 +115,7 @@ pub enum OtherService {
 display_via_serde!(OtherService);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Outfitting {
@@ -120,6 +124,7 @@ pub struct Outfitting {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Ship {
@@ -128,6 +133,7 @@ pub struct Ship {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct StationBody {
@@ -141,6 +147,7 @@ pub struct StationBody {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum StationType {
     // Orbital Large
@@ -171,22 +178,27 @@ pub enum StationType {
 display_via_serde!(StationType);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct UpdateTime {
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub information: DateTime<Utc>,
     #[serde(with = "date_format_opt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub market: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub outfitting: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub shipyard: Option<DateTime<Utc>>,
 }
 

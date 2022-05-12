@@ -12,6 +12,7 @@ use super::RootEntry;
 // Main Type
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct SystemPopulated {
@@ -40,6 +41,7 @@ pub struct SystemPopulated {
     pub stations: Vec<StationInPopulated>,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub date: DateTime<Utc>,
 }
 
@@ -60,6 +62,7 @@ impl RootEntry for SystemPopulated {
 // Field Type
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct FactionInPopulated {
@@ -81,10 +84,12 @@ pub struct FactionInPopulated {
     pub state: Option<bgs::State>,
     // Metadata
     #[serde(with = "ts_seconds")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub last_update: DateTime<Utc>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct StationInPopulated {
@@ -114,5 +119,6 @@ pub struct StationInPopulated {
     #[serde(rename = "type")]
     pub st_type: Option<station::StationType>,
     // Metadata
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub update_time: station::UpdateTime,
 }
