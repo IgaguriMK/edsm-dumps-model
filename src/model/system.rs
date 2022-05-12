@@ -16,7 +16,6 @@ pub struct SystemWithCoordinates {
     pub id: u64,
     // Attributes
     pub coords: Coords,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub name: String,
     // Metadata
@@ -61,9 +60,7 @@ impl System for SystemWithCoordinates {
 pub struct SystemWithoutCoordinates {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub estimated_coordinates: Option<EstimatedCoords>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub name: String,
     // Metadata

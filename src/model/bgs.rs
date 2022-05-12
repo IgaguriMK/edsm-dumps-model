@@ -34,13 +34,9 @@ display_via_serde!(Allegiance);
 pub struct ControllingFaction {
     pub id: Option<u64>,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allegiance: Option<Allegiance>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub government: Option<Government>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_player: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 

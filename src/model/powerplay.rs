@@ -18,16 +18,13 @@ use crate::display_via_serde;
 pub struct PowerPlay {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allegiance: Option<bgs::Allegiance>,
     pub coords: system::Coords,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub government: Option<bgs::Government>,
     pub id64: u64,
     pub name: String,
     pub power: Power,
     pub power_state: PowerState,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<bgs::State>,
     // Metadata
     #[serde(with = "date_format")]

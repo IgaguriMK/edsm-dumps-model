@@ -19,32 +19,21 @@ use crate::display_via_serde;
 pub struct Station {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allegiance: Option<bgs::Allegiance>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub body: Option<StationBody>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub commodities: Option<Vec<Commodity>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub controlling_faction: Option<bgs::ControllingFaction>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub distance_to_arrival: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub economy: Option<bgs::Economy>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub government: Option<bgs::Government>,
     pub have_market: bool,
     pub have_outfitting: bool,
     pub have_shipyard: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub market_id: Option<u64>,
     pub name: String,
     pub other_services: Vec<OtherService>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub outfitting: Option<Vec<Outfitting>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub second_economy: Option<bgs::Economy>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ships: Option<Vec<Ship>>,
     pub system_id: Option<u64>,
     pub system_id64: Option<u64>,
@@ -139,9 +128,7 @@ pub struct Ship {
 pub struct StationBody {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub latitude: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub longitude: Option<f32>,
     pub name: String,
 }
@@ -186,17 +173,14 @@ pub struct UpdateTime {
     #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub information: DateTime<Utc>,
     #[serde(with = "date_format_opt")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
     #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub market: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
     #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub outfitting: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
     #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub shipyard: Option<DateTime<Utc>>,
