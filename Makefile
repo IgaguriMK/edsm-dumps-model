@@ -5,7 +5,7 @@ all: check
 
 .PHONY: check
 check: soft-clean
-	cargo test
+	cargo test --all-features
 	cargo fmt -- --check
 	cargo clippy -- -D warnings
 	cargo audit
@@ -13,7 +13,7 @@ check: soft-clean
 .PHONY: min-check
 min-check:
 	cargo +nightly update -Z minimal-versions
-	cargo check
+	cargo check --all-features
 
 .PHONY: soft-clean
 soft-clean:
