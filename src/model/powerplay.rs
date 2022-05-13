@@ -12,24 +12,23 @@ use super::util::DisplayViaSerde;
 use crate::display_via_serde;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct PowerPlay {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allegiance: Option<bgs::Allegiance>,
     pub coords: system::Coords,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub government: Option<bgs::Government>,
     pub id64: u64,
     pub name: String,
     pub power: Power,
     pub power_state: PowerState,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<bgs::State>,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub date: DateTime<Utc>,
 }
 
@@ -50,6 +49,7 @@ impl RootEntry for PowerPlay {
 // Field Type
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Power {
     #[serde(rename = "A. Lavigny-Duval")]
@@ -79,6 +79,7 @@ pub enum Power {
 display_via_serde!(Power);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum PowerState {
     Contested,

@@ -13,37 +13,27 @@ use crate::display_via_serde;
 // Main Type
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Station {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allegiance: Option<bgs::Allegiance>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub body: Option<StationBody>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub commodities: Option<Vec<Commodity>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub controlling_faction: Option<bgs::ControllingFaction>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub distance_to_arrival: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub economy: Option<bgs::Economy>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub government: Option<bgs::Government>,
     pub have_market: bool,
     pub have_outfitting: bool,
     pub have_shipyard: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub market_id: Option<u64>,
     pub name: String,
     pub other_services: Vec<OtherService>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub outfitting: Option<Vec<Outfitting>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub second_economy: Option<bgs::Economy>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ships: Option<Vec<Ship>>,
     pub system_id: Option<u64>,
     pub system_id64: Option<u64>,
@@ -71,6 +61,7 @@ impl RootEntry for Station {
 // Filed Type
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Commodity {
@@ -85,6 +76,7 @@ pub struct Commodity {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum OtherService {
     #[serde(rename = "Black Market")]
@@ -112,6 +104,7 @@ pub enum OtherService {
 display_via_serde!(OtherService);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Outfitting {
@@ -120,6 +113,7 @@ pub struct Outfitting {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Ship {
@@ -128,19 +122,19 @@ pub struct Ship {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct StationBody {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub latitude: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub longitude: Option<f32>,
     pub name: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, EnumIter, VariantCount)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum StationType {
     // Orbital Large
@@ -171,22 +165,24 @@ pub enum StationType {
 display_via_serde!(StationType);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct UpdateTime {
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub information: DateTime<Utc>,
     #[serde(with = "date_format_opt")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub market: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub outfitting: Option<DateTime<Utc>>,
     #[serde(with = "date_format_opt")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "option_none")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub shipyard: Option<DateTime<Utc>>,
 }
 

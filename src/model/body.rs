@@ -70,6 +70,7 @@ impl<T: BodyT> BodyT for &T {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 #[serde(tag = "type")]
 #[allow(clippy::large_enum_variant)]
@@ -166,6 +167,7 @@ impl RootEntry for Body {
 
 /// Surrogate type for some encodings.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 #[allow(clippy::large_enum_variant)]
 pub enum BodyS {
@@ -262,71 +264,48 @@ macro_rules! body_t_impl_deref {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Planet {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub arg_of_periapsis: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub atmosphere_composition: Option<AtmosphereComposition>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub atmosphere_type: Option<AtmosphereType>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub axial_tilt: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub belts: Option<Vec<Belt>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub body_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discovery: Option<Discovery>,
     pub distance_to_arrival: u64,
     pub earth_masses: f32,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub gravity: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub is_landable: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub materials: Option<Materials>,
     pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_eccentricity: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_inclination: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_period: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub parents: Option<Vec<Parent>>,
     pub radius: f32,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reserve_level: Option<ReserveLevel>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rings: Option<Vec<Ring>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rotational_period: Option<f32>,
     pub rotational_period_tidally_locked: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub semi_major_axis: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub solid_composition: Option<SolidComposition>,
     pub sub_type: PlanetSubType,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub surface_pressure: Option<f32>,
     pub surface_temperature: u64,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id64: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub terraforming_state: Option<TerraformingState>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub volcanism_type: Option<VolcanismType>,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub update_time: DateTime<Utc>,
 }
 
@@ -355,63 +334,45 @@ impl BodyT for Planet {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Star {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub absolute_magnitude: Option<f32>,
     pub age: u64,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub arg_of_periapsis: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub axial_tilt: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub belts: Option<Vec<Belt>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub body_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discovery: Option<Discovery>,
     pub distance_to_arrival: u64,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub is_main_star: bool,
     pub is_scoopable: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub luminosity: Option<Luminosity>,
     pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_eccentricity: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_inclination: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub orbital_period: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub parents: Option<Vec<Parent>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reserve_level: Option<ReserveLevel>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rings: Option<Vec<Ring>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rotational_period: Option<f32>,
     pub rotational_period_tidally_locked: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub semi_major_axis: Option<f32>,
     pub solar_masses: f32,
     pub solar_radius: f32,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spectral_class: Option<SpectralClass>,
     pub sub_type: StarSubType,
     pub surface_temperature: u64,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id64: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_name: Option<String>,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub update_time: DateTime<Utc>,
 }
 
@@ -440,21 +401,19 @@ impl BodyT for Star {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 pub struct Unknown {
     pub id: u64,
     // Attributes
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id64: Option<u64>,
     pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_id64: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_name: Option<String>,
     // Metadata
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub update_time: DateTime<Utc>,
 }
 
@@ -498,6 +457,7 @@ impl BodyT for Unknown {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum AsteroidType {
     Icy,
@@ -510,6 +470,7 @@ pub enum AsteroidType {
 display_via_serde!(AsteroidType);
 
 #[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "PascalCase")]
 pub struct AtmosphereComposition(BTreeMap<AtmosphereCompositionKey, f32>);
 
@@ -533,6 +494,7 @@ impl AtmosphereComposition {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 pub enum AtmosphereCompositionKey {
     Ammonia,
     Argon,
@@ -571,6 +533,7 @@ display_via_serde!(AtmosphereCompositionKey);
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 pub enum AtmosphereType {
     /* normal */
     Ammonia,
@@ -745,6 +708,7 @@ impl AtmosphereType {
 display_via_serde!(AtmosphereType);
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Belt {
@@ -753,16 +717,17 @@ pub struct Belt {
     pub name: String,
     pub outer_radius: f32,
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<AsteroidType>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Discovery {
     pub commander: String,
     #[serde(with = "date_format")]
+    #[cfg_attr(feature = "type_hash", type_hash(foreign_type))]
     pub date: DateTime<Utc>,
 }
 
@@ -780,6 +745,7 @@ pub struct Discovery {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Luminosity {
     VII,
@@ -816,6 +782,7 @@ impl Luminosity {
 display_via_serde!(Luminosity);
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "PascalCase")]
 #[serde(deny_unknown_fields)]
 pub struct Materials(BTreeMap<MaterialsKey, f32>);
@@ -840,6 +807,7 @@ impl Materials {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 pub enum MaterialsKey {
     Antimony,
     Arsenic,
@@ -875,6 +843,7 @@ impl MaterialsKey {
 display_via_serde!(MaterialsKey);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum Parent {
     Null(u64),
@@ -896,6 +865,7 @@ pub enum Parent {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum PlanetSubType {
     // gas ginat
@@ -981,6 +951,7 @@ display_via_serde!(PlanetSubType);
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum ReserveLevel {
     Depleted,
@@ -997,6 +968,7 @@ impl ReserveLevel {
 display_via_serde!(ReserveLevel);
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Ring {
@@ -1005,11 +977,11 @@ pub struct Ring {
     pub name: String,
     pub outer_radius: f32,
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub typ: Option<AsteroidType>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(rename_all = "PascalCase")]
 #[serde(deny_unknown_fields)]
 pub struct SolidComposition {
@@ -1035,6 +1007,7 @@ pub struct SolidComposition {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 pub enum StarClass {
     OTypeStars,
     BTypeStars,
@@ -1115,6 +1088,7 @@ impl fmt::Display for StarClass {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum SpectralClass {
     O,
@@ -1267,6 +1241,7 @@ display_via_serde!(SpectralClass);
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum StarSubType {
     // Main sequence
@@ -1484,6 +1459,7 @@ impl StarSubType {
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum TerraformingState {
     #[serde(rename = "Candidate for terraforming")]
@@ -1514,6 +1490,7 @@ display_via_serde!(TerraformingState);
     EnumIter,
     VariantCount,
 )]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum VolcanismType {
     #[serde(rename = "Ammonia Magma")]
