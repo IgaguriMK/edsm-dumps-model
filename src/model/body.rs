@@ -231,6 +231,24 @@ impl From<BodyS> for Body {
     }
 }
 
+impl RootEntry for BodyS {
+    fn entry_id(&self) -> u64 {
+        self.id()
+    }
+
+    fn type_name() -> &'static str {
+        "body"
+    }
+
+    fn time(&self) -> DateTime<Utc> {
+        match self {
+            BodyS::Planet(x) => x.update_time,
+            BodyS::Star(x) => x.update_time,
+            BodyS::Unknown(x) => x.update_time,
+        }
+    }
+}
+
 macro_rules! body_t_impl {
     ($n:ident, $t:ty) => {
         fn $n(&self) -> $t {
