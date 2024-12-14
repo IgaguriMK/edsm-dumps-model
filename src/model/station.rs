@@ -99,6 +99,14 @@ pub enum OtherService {
     Tuning,
     #[serde(rename = "Universal Cartographics")]
     UniversalCartographics,
+    #[serde(rename = "Apex Interstellar Transport")]
+    ApexInterstellarTransport,
+    #[serde(rename = "Frontline Solutions")]
+    FrontlineSolutions,
+    #[serde(rename = "Pioneer Supplies")]
+    PioneerSupplies,
+    #[serde(rename = "Vista Genomics")]
+    VistaGenomics,
 }
 
 display_via_serde!(OtherService);
