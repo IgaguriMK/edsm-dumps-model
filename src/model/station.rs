@@ -10,6 +10,8 @@ use super::RootEntry;
 use super::util::DisplayViaSerde;
 use crate::display_via_serde;
 
+use serde;
+
 // Main Type
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -116,8 +118,24 @@ display_via_serde!(OtherService);
 #[serde(rename_all = "camelCase")]
 #[serde(deny_unknown_fields)]
 pub struct Outfitting {
-    id: String,
+    id: Option<String>,
     name: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Name {
+    String(String),
+    Number(u64),
+}
+
+impl ToString for Name {
+    fn to_string(&self) -> String {
+        match self {
+            Name::String(s) => s.clone(),
+            Name::Number(n) => n.to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -126,7 +144,7 @@ pub struct Outfitting {
 #[serde(deny_unknown_fields)]
 pub struct Ship {
     id: u64,
-    name: String,
+    name: Name,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
