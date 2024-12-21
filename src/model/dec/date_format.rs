@@ -1,4 +1,4 @@
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, NaiveDateTime, Utc};
 use serde::{self, Deserialize, Deserializer, Serializer};
 
 const FORMAT: &str = "%Y-%m-%d %H:%M:%S";
@@ -16,6 +16,6 @@ where
     D: Deserializer<'de>,
 {
     let s = String::deserialize(deserializer)?;
-    Utc.datetime_from_str(&s, FORMAT)
-        .map_err(serde::de::Error::custom)
+    let date_naive = NaiveDateTime::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?;
+    Ok(date_naive.and_utc())
 }
