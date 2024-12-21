@@ -23,7 +23,7 @@ pub enum Allegiance {
     Independent,
     #[serde(rename = "Pilots Federation")]
     PilotsFederation,
-    Thargoid
+    Thargoid,
 }
 
 display_via_serde!(Allegiance);
@@ -63,7 +63,7 @@ pub enum Economy {
     Service,
     Terraforming,
     Tourism,
-    Engineer
+    Engineer,
 }
 
 display_via_serde!(Economy);

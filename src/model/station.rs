@@ -124,6 +124,7 @@ pub struct Outfitting {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(untagged)]
+#[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 pub enum Name {
     String(String),
     Number(u64),
