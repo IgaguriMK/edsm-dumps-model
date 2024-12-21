@@ -1,7 +1,7 @@
 use std::io::{BufRead, BufReader};
 
 use anyhow::{Context, Result};
-use serde_json::{from_slice, to_vec};
+use serde_json::{from_str, to_string};
 
 use edsm_dumps_model::model::body::Body;
 use edsm_dumps_model::model::powerplay::PowerPlay;
@@ -67,15 +67,18 @@ fn try_parse<T: RootEntry + std::fmt::Debug + PartialEq>(bs: &[u8]) -> Result<()
 }
 
 fn try_round_trip<T: RootEntry + std::fmt::Debug + PartialEq>(line: &str) -> Result<()> {
-    let decoded = T::parse_dump_json(line.as_bytes()).context("parsing sample JSON")?;
+    let decoded = T::parse_dump_json(line.as_bytes())
+        .with_context(|| format!("parsing sample JSON: {}", line))?;
 
-    let encoded = to_vec(&decoded).context("encoding decoded valuew to JSON")?;
+    let encoded = to_string(&decoded).context("encoding decoded valuew to JSON")?;
 
-    let re_decoded: T = from_slice(&encoded).context("parsing encoded value")?;
+    let re_decoded: T =
+        from_str(&encoded).with_context(|| format!("parsing encoded value: {}", encoded))?;
 
     assert_eq!(
         decoded, re_decoded,
-        "parsed value and re-parsed value should matches"
+        "parsed value and re-parsed value should matches\nDecoded: {:?}\nRe-decoded: {:?}",
+        decoded, re_decoded
     );
 
     Ok(())
