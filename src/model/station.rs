@@ -130,11 +130,11 @@ pub enum Name {
     Number(u64),
 }
 
-impl ToString for Name {
-    fn to_string(&self) -> String {
+impl std::fmt::Display for Name {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Name::String(s) => s.clone(),
-            Name::Number(n) => n.to_string(),
+            Name::String(s) => write!(f, "{}", s),
+            Name::Number(n) => write!(f, "{}", n),
         }
     }
 }
