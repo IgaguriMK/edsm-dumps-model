@@ -109,6 +109,11 @@ pub enum OtherService {
     PioneerSupplies,
     #[serde(rename = "Vista Genomics")]
     VistaGenomics,
+    #[serde(rename = "System colonisation")]
+    SystemColonisation,
+    #[serde(rename = "Fleet carrier administration")]
+    FleetCarrierAdministration,
+    Bartender,
 }
 
 display_via_serde!(OtherService);
