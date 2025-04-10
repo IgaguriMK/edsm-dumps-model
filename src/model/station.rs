@@ -113,6 +113,8 @@ pub enum OtherService {
     SystemColonisation,
     #[serde(rename = "Fleet carrier administration")]
     FleetCarrierAdministration,
+    #[serde(rename = "Fleet carrier vendor")]
+    FleetCarrierVendor,
     Bartender,
 }
 
