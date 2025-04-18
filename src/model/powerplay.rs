@@ -64,8 +64,12 @@ pub enum Power {
     EdmundMahon,
     #[serde(rename = "Felicia Winters")]
     FeliciaWinters,
+    #[serde(rename = "Jerome Archer")]
+    JeromeArcher,
     #[serde(rename = "Li Yong-Rui")]
     LiYongRui,
+    #[serde(rename = "Nakato Kaine")]
+    NakatoKaine,
     #[serde(rename = "Pranav Antal")]
     PranavAntal,
     #[serde(rename = "Yuri Grom")]
