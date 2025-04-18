@@ -64,8 +64,12 @@ pub enum Power {
     EdmundMahon,
     #[serde(rename = "Felicia Winters")]
     FeliciaWinters,
+    #[serde(rename = "Jerome Archer")]
+    JeromeArcher,
     #[serde(rename = "Li Yong-Rui")]
     LiYongRui,
+    #[serde(rename = "Nakato Kaine")]
+    NakatoKaine,
     #[serde(rename = "Pranav Antal")]
     PranavAntal,
     #[serde(rename = "Yuri Grom")]
@@ -82,12 +86,22 @@ display_via_serde!(Power);
 #[cfg_attr(feature = "type_hash", derive(type_hash::TypeHash))]
 #[serde(deny_unknown_fields)]
 pub enum PowerState {
-    Contested,
-    Controlled,
     Exploited,
+    Fortified,
+    Unoccupied,
+    Stronghold,
+
+    /// Legacy: "Contested" was used in the past. Leave it here for backwards compatibility.
+    Contested,
+    /// Legacy: "Controlled" was used in the past. Leave it here for backwards compatibility.
+    Controlled,
+    /// Legacy: "HomeSystem" was used in the past. Leave it here for backwards compatibility.
     HomeSystem,
+    /// Legacy: "InPrepareRadius" was used in the past. Leave it here for backwards compatibility.
     InPrepareRadius,
+    /// Legacy: "Prepared" was used in the past. Leave it here for backwards compatibility.
     Prepared,
+    /// Legacy: "Turmoil" was used in the past. Leave it here for backwards compatibility.
     Turmoil,
 }
 

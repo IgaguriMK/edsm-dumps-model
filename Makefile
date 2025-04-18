@@ -22,3 +22,7 @@ soft-clean:
 .PHONY: clean
 clean:
 	cargo clean
+
+.PHONY: download-dumps
+download-dumps:
+	make -C dumps download-dumps

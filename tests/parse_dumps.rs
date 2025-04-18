@@ -1,14 +1,14 @@
-//! Lightweight tests for parsing the sampled JSON files.
+//! Full dump file parsing tests.
 //!
-//! The tests are not exhaustive, but they ensure that the sampled JSON files can be parsed and
-//! serialized.
-//! They also verify that the values remain identical after a round‑trip (parse → serialize → parse),
-//! helping detect missing fields.
+//! This tests parse the full dump files.
+//!
+//! If you find failing patterns, please add them to the `sampled_json` directory.
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 use anyhow::{Context, Result};
+use flate2::read::GzDecoder;
 use serde_json::{from_str, to_string};
 
 use edsm_dumps_model::model::body::Body;
@@ -19,38 +19,45 @@ use edsm_dumps_model::model::system_populated::SystemPopulated;
 use edsm_dumps_model::model::RootEntry;
 
 #[test]
-fn parse_body() -> Result<()> {
-    try_parse::<Body>("./sampled_json/body.json")
+#[ignore]
+fn parse_bodies_7days() -> Result<()> {
+    try_parse::<Body>("./dumps/bodies7days.json.gz")
 }
 
 #[test]
+#[ignore]
 fn parse_power_play() -> Result<()> {
-    try_parse::<PowerPlay>("./sampled_json/powerPlay.json")
+    try_parse::<PowerPlay>("./dumps/powerPlay.json.gz")
 }
 
 #[test]
-fn parse_station() -> Result<()> {
-    try_parse::<Station>("./sampled_json/station.json")
+#[ignore]
+fn parse_stations() -> Result<()> {
+    try_parse::<Station>("./dumps/stations.json.gz")
 }
 
 #[test]
-fn parse_system_with_coordinates() -> Result<()> {
-    try_parse::<SystemWithCoordinates>("./sampled_json/systemWithCoordinates.json")
+#[ignore]
+fn parse_systems_populated() -> Result<()> {
+    try_parse::<SystemPopulated>("./dumps/systemsPopulated.json.gz")
 }
 
 #[test]
-fn parse_system_without_coordinates() -> Result<()> {
-    try_parse::<SystemWithoutCoordinates>("./sampled_json/systemWithoutCoordinates.json")
+#[ignore]
+fn parse_systems_with_coordinates_7days() -> Result<()> {
+    try_parse::<SystemWithCoordinates>("./dumps/systemsWithCoordinates7days.json.gz")
 }
 
 #[test]
-fn parse_system_populated() -> Result<()> {
-    try_parse::<SystemPopulated>("./sampled_json/systemPopulated.json")
+#[ignore]
+fn parse_systems_without_coordinates() -> Result<()> {
+    try_parse::<SystemWithoutCoordinates>("./dumps/systemsWithoutCoordinates.json.gz")
 }
 
 fn try_parse<T: RootEntry + std::fmt::Debug + PartialEq>(path: &str) -> Result<()> {
     let f = File::open(path).context("failed to read file")?;
-    let r = BufReader::new(f);
+    let r = GzDecoder::new(f);
+    let r = BufReader::new(r);
 
     for (line_num, line) in r.lines().enumerate() {
         let line = line?;
