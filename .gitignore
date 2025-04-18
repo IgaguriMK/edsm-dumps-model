@@ -1,6 +1,3 @@
 /target
-**/*.rs.bk
 
-/*.json
-/schemas
-/error.txt
+/dumps/*.gz
