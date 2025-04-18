@@ -1,3 +1,9 @@
+//! Full dump file parsing tests.
+//!
+//! This tests parse the full dump files.
+//!
+//! If you find failing patterns, please add them to the `sampled_json` directory.
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 

@@ -1,3 +1,10 @@
+//! Lightweight tests for parsing the sampled JSON files.
+//!
+//! The tests are not exhaustive, but they ensure that the sampled JSON files can be parsed and
+//! serialized.
+//! They also verify that the values remain identical after a round‑trip (parse → serialize → parse),
+//! helping detect missing fields.
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
