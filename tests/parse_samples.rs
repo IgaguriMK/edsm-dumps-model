@@ -1,3 +1,4 @@
+use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 use anyhow::{Context, Result};
@@ -12,42 +13,37 @@ use edsm_dumps_model::model::RootEntry;
 
 #[test]
 fn parse_body() -> Result<()> {
-    let bs = include_bytes!("./sample_json/body.json");
-    try_parse::<Body>(&bs[..])
+    try_parse::<Body>("./sampled_json/body.json")
 }
 
 #[test]
 fn parse_power_play() -> Result<()> {
-    let bs = include_bytes!("./sample_json/powerPlay.json");
-    try_parse::<PowerPlay>(&bs[..])
+    try_parse::<PowerPlay>("./sampled_json/powerPlay.json")
 }
 
 #[test]
 fn parse_station() -> Result<()> {
-    let bs = include_bytes!("./sample_json/station.json");
-    try_parse::<Station>(&bs[..])
+    try_parse::<Station>("./sampled_json/station.json")
 }
 
 #[test]
 fn parse_system_with_coordinates() -> Result<()> {
-    let bs = include_bytes!("./sample_json/systemWithCoordinates.json");
-    try_parse::<SystemWithCoordinates>(&bs[..])
+    try_parse::<SystemWithCoordinates>("./sampled_json/systemWithCoordinates.json")
 }
 
 #[test]
 fn parse_system_without_coordinates() -> Result<()> {
-    let bs = include_bytes!("./sample_json/systemWithoutCoordinates.json");
-    try_parse::<SystemWithoutCoordinates>(&bs[..])
+    try_parse::<SystemWithoutCoordinates>("./sampled_json/systemWithoutCoordinates.json")
 }
 
 #[test]
 fn parse_system_populated() -> Result<()> {
-    let bs = include_bytes!("./sample_json/systemPopulated.json");
-    try_parse::<SystemPopulated>(&bs[..])
+    try_parse::<SystemPopulated>("./sampled_json/systemPopulated.json")
 }
 
-fn try_parse<T: RootEntry + std::fmt::Debug + PartialEq>(bs: &[u8]) -> Result<()> {
-    let r = BufReader::new(bs);
+fn try_parse<T: RootEntry + std::fmt::Debug + PartialEq>(path: &str) -> Result<()> {
+    let f = File::open(path).context("failed to read file")?;
+    let r = BufReader::new(f);
 
     for (line_num, line) in r.lines().enumerate() {
         let line = line?;
